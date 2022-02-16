@@ -13,3 +13,10 @@
 #include <linux/regmap.h>
 #include <linux/regulator/consumer.h>
 #include <linux/spi/spi.h>
+
+/* ADAQ8092 Register Map */
+#define ADAQ8092_REG_RESET		0x00
+#define ADAQ8092_REG_POWERDOWN		0x01
+#define ADAQ8092_REG_TIMING		0x02
+#define ADAQ8092_REG_OUTPUT_MODE	0x03
+#define ADAQ8092_REG_DATA_FORMAT	0x04
