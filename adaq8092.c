@@ -8,6 +8,7 @@
 #include <linux/bitfield.h>
 #include <linux/bits.h>
 #include <linux/device.h>
+#include <linux/gpio/consumer.h>
 #include <linux/iio/iio.h>
 #include <linux/module.h>
 #include <linux/regmap.h>
@@ -92,6 +93,10 @@ struct adaq8092_state {
 	struct regmap		*regmap;
 	/* Protect against concurrent accesses to the device and data content */
 	struct mutex		lock;
+	struct gpio_desc	*gpio_adc_pd1;
+	struct gpio_desc	*gpio_adc_pd2;
+	struct gpio_desc	*gpio_en_1p8;
+	struct gpio_desc	*gpio_par_ser;
 };
 
 static const struct regmap_config adaq8092_regmap_config = {
@@ -140,6 +145,36 @@ static const struct iio_chan_spec adaq8092_channels[] = {
 	//TODO
 };
 
+static int adaq8092_properties_parse(struct adaq8092_state *st)
+{
+	struct spi_device *spi = st->spi;
+
+	st->gpio_adc_pd1 = devm_gpiod_get(&st->spi->dev, "adc-pd1",
+					  GPIOD_OUT_HIGH);
+	if (IS_ERR(st->gpio_adc_pd1))
+		return dev_err_probe(&spi->dev, PTR_ERR(st->gpio_adc_pd1),
+				     "failed to get the PD1 GPIO\n");
+
+	st->gpio_adc_pd2 = devm_gpiod_get(&st->spi->dev, "adc-pd2",
+					  GPIOD_OUT_HIGH);
+	if (IS_ERR(st->gpio_adc_pd2))
+		return dev_err_probe(&spi->dev, PTR_ERR(st->gpio_adc_pd2),
+				     "failed to get the PD2 GPIO\n");
+
+	st->gpio_en_1p8 = devm_gpiod_get(&st->spi->dev, "en-1p8",
+					 GPIOD_OUT_HIGH);
+	if (IS_ERR(st->gpio_en_1p8))
+		return dev_err_probe(&spi->dev, PTR_ERR(st->gpio_en_1p8),
+				     "failed to get the 1p8 GPIO\n");
+
+	st->gpio_par_ser = devm_gpiod_get(&st->spi->dev, "par-ser",
+					  GPIOD_OUT_HIGH);
+	if (IS_ERR(st->gpio_par_ser))
+		return dev_err_probe(&spi->dev, PTR_ERR(st->gpio_par_ser),
+				     "failed to get the Par/Ser GPIO\n");
+
+	return 0;
+}
 static int adaq8092_probe(struct spi_device *spi)
 {
 	struct iio_dev *indio_dev;
