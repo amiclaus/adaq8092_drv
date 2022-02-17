@@ -1,0 +1,25 @@
+// SPDX-License-Identifier: GPL-2.0
+/*
+ * Analog Devices AD7768
+ * https://wiki.analog.com/resources/tools-software/linux-drivers/iio-adc/ad7768
+ *
+ * hdl_project: <ad7768evb/zed>
+ * board_revision: <>
+ *
+ * Copyright (C) 2016-2019 Analog Devices Inc.
+ */
+/dts-v1/;
+
+#include "zynq-zed.dtsi"
+#include "zynq-zed-adv7511.dtsi"
+
+
+&spi0 {
+	status = "okay";
+
+	adaq8092: adc@0 {
+		compatible = "adi,adaq8092";
+		reg = <0>;
+		spi-max-frequency = <1000000>;
+	};
+};
