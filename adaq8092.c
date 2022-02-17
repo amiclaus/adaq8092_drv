@@ -128,3 +128,10 @@ static int adaq8092_reg_access(struct iio_dev *indio_dev,
 	else
 		return regmap_write(st->regmap, reg, write_val);
 }
+
+static const struct iio_info adaq8092_info = {
+	.read_raw = adaq8092_read_raw,
+	.write_raw = adaq8092_write_raw,
+	.debugfs_reg_access = &adaq8092_reg_access,
+};
+
