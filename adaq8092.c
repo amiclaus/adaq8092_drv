@@ -86,3 +86,10 @@ enum adaq8092_out_test_modes {
 	ADAQ8092_TEST_CHECKERBOARD,
 	ADAQ8092_TEST_ALTERNATING,
 }
+
+struct adaq8092_state {
+	struct spi_device	*spi;
+	struct regmap		*regmap;
+	/* Protect against concurrent accesses to the device and data content */
+	struct mutex		lock;
+};
