@@ -93,3 +93,10 @@ struct adaq8092_state {
 	/* Protect against concurrent accesses to the device and data content */
 	struct mutex		lock;
 };
+
+static const struct regmap_config adaq8092_regmap_config = {
+	.reg_bits = 8,
+	.val_bits = 8,
+	.read_flag_mask = BIT(7),
+	.max_register = 0x1A,
+};
