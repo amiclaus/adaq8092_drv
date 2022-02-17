@@ -136,6 +136,10 @@ static const struct iio_info adaq8092_info = {
 	.debugfs_reg_access = &adaq8092_reg_access,
 };
 
+static const struct iio_chan_spec adaq8092_channels[] = {
+	//TODO
+};
+
 static int adaq8092_probe(struct spi_device *spi)
 {
 	struct iio_dev *indio_dev;
