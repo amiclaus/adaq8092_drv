@@ -22,7 +22,7 @@
 #define ADAQ8092_REG_DATA_FORMAT	0x04
 
 /* ADAQ8092_REG_RESET Bit Definition */
-#define ADAQ8092_REG_RESET		BIT(7)
+#define ADAQ8092_RESET			BIT(7)
 
 /* ADAQ8092_REG_POWERDOWN Bit Definition */
 #define ADAQ8092_POWERDOWN_MODE		GENMASK(1, 0)
@@ -64,7 +64,7 @@ enum adaq8092_clk_phase_delay {
 enum adaq8092_lvds_out_current {
 	ADAQ8092_3M5A = 0,
 	ADAQ8092_4MA = 1,
-	ADAQ8092_4M5A, = 2,
+	ADAQ8092_4M5A = 2,
 	ADAQ8092_3MA = 4,
 	ADAQ8092_2M5A = 5,
 	ADAQ8092_2M1A = 6,
@@ -85,7 +85,7 @@ enum adaq8092_out_test_modes {
 	ADAQ8092_TEST_ZEROS,
 	ADAQ8092_TEST_CHECKERBOARD,
 	ADAQ8092_TEST_ALTERNATING,
-}
+};
 
 struct adaq8092_state {
 	struct spi_device	*spi;
@@ -106,6 +106,7 @@ static int adaq8092_read_raw(struct iio_dev *indio_dev,
 			     int *val, int *val2, long info)
 {
 	//TODO
+	return 0;
 }
 
 static int adaq8092_write_raw(struct iio_dev *indio_dev,
@@ -113,6 +114,7 @@ static int adaq8092_write_raw(struct iio_dev *indio_dev,
 			      int val, int val2, long info)
 {
 	//TODO
+	return 0;
 }
 
 static int adaq8092_reg_access(struct iio_dev *indio_dev,
@@ -139,7 +141,6 @@ static int adaq8092_probe(struct spi_device *spi)
 	struct iio_dev *indio_dev;
 	struct regmap *regmap;
 	struct adaq8092_state *st;
-	int ret;
 
 	indio_dev = devm_iio_device_alloc(&spi->dev, sizeof(*st));
 	if (!indio_dev)
