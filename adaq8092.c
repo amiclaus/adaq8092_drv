@@ -135,3 +135,31 @@ static const struct iio_info adaq8092_info = {
 	.debugfs_reg_access = &adaq8092_reg_access,
 };
 
+static int adaq8092_probe(struct spi_device *spi)
+{
+	struct iio_dev *indio_dev;
+	struct regmap *regmap;
+	struct adaq8092_state *st;
+	int ret;
+
+	indio_dev = devm_iio_device_alloc(&spi->dev, sizeof(*st));
+	if (!indio_dev)
+		return -ENOMEM;
+
+	regmap = devm_regmap_init_spi(spi, &adaq8092_regmap_config);
+	if (IS_ERR(regmap))
+		return PTR_ERR(regmap);
+
+	st = iio_priv(indio_dev);
+	st->regmap = regmap;
+	st->spi = spi;
+
+	indio_dev->info = &adaq8092_info;
+	indio_dev->name = "adaq8092";
+	indio_dev->channels = adaq8092_channels;
+	indio_dev->num_channels = ARRAY_SIZE(adaq8092_channels);
+
+	mutex_init(&st->lock);
+
+	return devm_iio_device_register(&spi->dev, indio_dev);
+}
