@@ -163,3 +163,29 @@ static int adaq8092_probe(struct spi_device *spi)
 
 	return devm_iio_device_register(&spi->dev, indio_dev);
 }
+
+static const struct spi_device_id adaq8092_id[] = {
+	{ "adaq8092", 0 },
+	{}
+};
+MODULE_DEVICE_TABLE(spi, adaq8092_id);
+
+static const struct of_device_id adaq8092_of_match[] = {
+	{ .compatible = "adi,adaq8092" },
+	{},
+};
+MODULE_DEVICE_TABLE(of, adaq8092_of_match);
+
+static struct spi_driver adaq8092_driver = {
+	.driver = {
+		.name = "adaq8092",
+		.of_match_table = adaq8092_of_match,
+	},
+	.probe = adaq8092_probe,
+	.id_table = adaq8092_id,
+};
+module_spi_driver(adaq8092_driver);
+
+MODULE_AUTHOR("Antoniu Miclaus <antoniu.miclaus@analog.com");
+MODULE_DESCRIPTION("Analog Devices ADAQ8092");
+MODULE_LICENSE("GPL v2");
