@@ -192,11 +192,27 @@ static void adaq8092_powerup(struct adaq8092_state *st)
 	gpiod_set_value(st->gpio_adc_pd1, 1);
 	gpiod_set_value(st->gpio_adc_pd2, 1);
 }
+
+static int adaq8092_init(struct adaq8092_state *st)
+{
+	int ret;
+
+	ret = adaq8092_properties_parse(st);
+	if (ret)
+		return ret;
+
+	adaq8092_powerup(st);
+
+	return regmap_write(st->regmap, ADAQ8092_REG_RESET,
+			  FIELD_PREP(ADAQ8092_RESET, 1));
+}
+
 static int adaq8092_probe(struct spi_device *spi)
 {
 	struct iio_dev *indio_dev;
 	struct regmap *regmap;
 	struct adaq8092_state *st;
+	int ret;
 
 	indio_dev = devm_iio_device_alloc(&spi->dev, sizeof(*st));
 	if (!indio_dev)
@@ -216,6 +232,10 @@ static int adaq8092_probe(struct spi_device *spi)
 	indio_dev->num_channels = ARRAY_SIZE(adaq8092_channels);
 
 	mutex_init(&st->lock);
+
+	ret = adaq8092_init(st);
+	if (ret)
+		return 0;
 
 	return devm_iio_device_register(&spi->dev, indio_dev);
 }
