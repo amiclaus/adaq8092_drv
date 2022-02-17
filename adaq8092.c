@@ -100,3 +100,15 @@ static const struct regmap_config adaq8092_regmap_config = {
 	.read_flag_mask = BIT(7),
 	.max_register = 0x1A,
 };
+static int adaq8092_reg_access(struct iio_dev *indio_dev,
+			      unsigned int reg,
+			      unsigned int write_val,
+			      unsigned int *read_val)
+{
+	struct adaq8092_state *st = iio_priv(indio_dev);
+
+	if (read_val)
+		return regmap_read(st->regmap, reg, read_val);
+	else
+		return regmap_write(st->regmap, reg, write_val);
+}
