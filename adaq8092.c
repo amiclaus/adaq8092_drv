@@ -175,6 +175,23 @@ static int adaq8092_properties_parse(struct adaq8092_state *st)
 
 	return 0;
 }
+
+static void adaq8092_powerup(struct adaq8092_state *st)
+{
+	gpiod_set_value(st->gpio_par_ser, 0);
+	gpiod_set_value(st->gpio_adc_pd1, 0);
+	gpiod_set_value(st->gpio_adc_pd2, 0);
+	gpiod_set_value(st->gpio_en_1p8, 0);
+
+	usleep_range(1000, 1500);
+
+	gpiod_set_value(st->gpio_en_1p8, 1);
+
+	usleep_range(1000, 1500);
+
+	gpiod_set_value(st->gpio_adc_pd1, 1);
+	gpiod_set_value(st->gpio_adc_pd2, 1);
+}
 static int adaq8092_probe(struct spi_device *spi)
 {
 	struct iio_dev *indio_dev;
