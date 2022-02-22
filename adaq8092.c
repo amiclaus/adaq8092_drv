@@ -7,6 +7,8 @@
 
 #include <linux/bitfield.h>
 #include <linux/bits.h>
+#include <linux/clk.h>
+#include <linux/clkdev.h>
 #include <linux/device.h>
 #include <linux/gpio/consumer.h>
 #include <linux/iio/iio.h>
@@ -91,6 +93,7 @@ enum adaq8092_out_test_modes {
 struct adaq8092_state {
 	struct spi_device	*spi;
 	struct regmap		*regmap;
+	struct clk		*clkin;
 	/* Protect against concurrent accesses to the device and data content */
 	struct mutex		lock;
 	struct gpio_desc	*gpio_adc_pd1;
@@ -173,6 +176,11 @@ static int adaq8092_properties_parse(struct adaq8092_state *st)
 		return dev_err_probe(&spi->dev, PTR_ERR(st->gpio_par_ser),
 				     "failed to get the Par/Ser GPIO\n");
 
+	st->clkin = devm_clk_get(&spi->dev, "clkin");
+	if (IS_ERR(st->clkin))
+		return dev_err_probe(&spi->dev, PTR_ERR(st->clkin),
+				     "failed to get the input clock\n");
+
 	return 0;
 }
 
@@ -194,10 +202,24 @@ static void adaq8092_powerup(struct adaq8092_state *st)
 }
 
 static int adaq8092_init(struct adaq8092_state *st)
+static void adaq8092_clk_disable(void *data)
 {
+	clk_disable_unprepare(data);
+}
+
 	int ret;
 
 	ret = adaq8092_properties_parse(st);
+	if (ret)
+		return ret;
+
+	iio_device_attach_buffer(indio_dev, buffer);
+
+	ret = clk_prepare_enable(st->clkin);
+	if (ret)
+		return ret;
+
+	ret = devm_add_action_or_reset(&spi->dev, adaq8092_clk_disable, st->clkin);
 	if (ret)
 		return ret;
 
