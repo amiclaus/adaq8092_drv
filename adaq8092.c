@@ -10,8 +10,14 @@
 #include <linux/clk.h>
 #include <linux/clkdev.h>
 #include <linux/device.h>
+#include <linux/dma-mapping.h>
+#include <linux/dmaengine.h>
 #include <linux/gpio/consumer.h>
 #include <linux/iio/iio.h>
+#include <linux/iio/buffer.h>
+#include <linux/iio/buffer_impl.h>
+#include <linux/iio/buffer-dma.h>
+#include <linux/iio/buffer-dmaengine.h>
 #include <linux/module.h>
 #include <linux/regmap.h>
 #include <linux/regulator/consumer.h>
@@ -184,6 +190,19 @@ static int adaq8092_properties_parse(struct adaq8092_state *st)
 	return 0;
 }
 
+static int hw_submit_block(struct iio_dma_buffer_queue *queue,
+			   struct iio_dma_buffer_block *block)
+{
+	block->block.bytes_used = block->block.size;
+
+	return iio_dmaengine_buffer_submit_block(queue, block, DMA_DEV_TO_MEM);
+}
+
+static const struct iio_dma_buffer_ops dma_buffer_ops = {
+	.submit = hw_submit_block,
+	.abort = iio_dmaengine_buffer_abort,
+};
+
 static void adaq8092_powerup(struct adaq8092_state *st)
 {
 	gpiod_set_value(st->gpio_par_ser, 0);
@@ -201,17 +220,26 @@ static void adaq8092_powerup(struct adaq8092_state *st)
 	gpiod_set_value(st->gpio_adc_pd2, 1);
 }
 
-static int adaq8092_init(struct adaq8092_state *st)
 static void adaq8092_clk_disable(void *data)
 {
 	clk_disable_unprepare(data);
 }
 
+static int adaq8092_init(struct adaq8092_state *st, struct iio_dev *indio_dev)
+{
+	struct spi_device *spi = st->spi;
+	struct iio_buffer *buffer;
 	int ret;
 
 	ret = adaq8092_properties_parse(st);
 	if (ret)
 		return ret;
+
+	buffer = devm_iio_dmaengine_buffer_alloc(indio_dev->dev.parent, "rx",
+						 &dma_buffer_ops, indio_dev);
+
+	if (IS_ERR(buffer))
+		return PTR_ERR(buffer);
 
 	iio_device_attach_buffer(indio_dev, buffer);
 
@@ -255,7 +283,7 @@ static int adaq8092_probe(struct spi_device *spi)
 
 	mutex_init(&st->lock);
 
-	ret = adaq8092_init(st);
+	ret = adaq8092_init(st, indio_dev);
 	if (ret)
 		return 0;
 
