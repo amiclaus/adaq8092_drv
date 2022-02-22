@@ -15,9 +15,9 @@
 #include <dt-bindings/gpio/gpio.h>
 
 &fpga_axi {
-	rx_dma: rx-dmac@7c400000 {
+	rx_dma: rx-dmac@44a30000 {
 		compatible = "adi,axi-dmac-1.00.a";
-		reg = <0x7c400000 0x10000>;
+		reg = <0x44a30000 0x10000>;
 		#dma-cells = <1>;
 		interrupts = <0 57 IRQ_TYPE_LEVEL_HIGH>;
 		clocks = <&clkc 16>;
