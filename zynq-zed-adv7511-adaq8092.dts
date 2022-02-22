@@ -14,6 +14,29 @@
 #include "zynq-zed-adv7511.dtsi"
 #include <dt-bindings/gpio/gpio.h>
 
+&fpga_axi {
+	rx_dma: rx-dmac@7c400000 {
+		compatible = "adi,axi-dmac-1.00.a";
+		reg = <0x7c400000 0x10000>;
+		#dma-cells = <1>;
+		interrupts = <0 57 IRQ_TYPE_LEVEL_HIGH>;
+		clocks = <&clkc 16>;
+
+		adi,channels {
+			#size-cells = <0>;
+			#address-cells = <1>;
+
+			dma-channel@0 {
+				reg = <0>;
+				adi,source-bus-width = <32>;
+				adi,source-bus-type = <2>;
+				adi,destination-bus-width = <32>;
+				adi,destination-bus-type = <0>;
+			};
+		};
+	};
+};
+
 &spi0 {
 	status = "okay";
 
@@ -21,9 +44,13 @@
 		compatible = "adi,adaq8092";
 		reg = <0>;
 		spi-max-frequency = <1000000>;
-		adc-pd1-gpios =  <&gpio0 87 GPIO_ACTIVE_HIGH>;
-		adc-pd2-gpios =  <&gpio0 88 GPIO_ACTIVE_HIGH>;
-		en-1p8-gpios =  <&gpio0 89 GPIO_ACTIVE_HIGH>;
+
+		dmas = <&rx_dma 0>;
+		dma-names = "rx";
+
+		adc-pd1-gpios = <&gpio0 87 GPIO_ACTIVE_HIGH>;
+		adc-pd2-gpios = <&gpio0 88 GPIO_ACTIVE_HIGH>;
+		en-1p8-gpios = <&gpio0 89 GPIO_ACTIVE_HIGH>;
 		par-ser-gpios = <&gpio0 86 GPIO_ACTIVE_HIGH>;
 	};
 };
