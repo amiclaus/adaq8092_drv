@@ -253,8 +253,13 @@ static int adaq8092_init(struct adaq8092_state *st, struct iio_dev *indio_dev)
 
 	adaq8092_powerup(st);
 
-	return regmap_write(st->regmap, ADAQ8092_REG_RESET,
+	ret = regmap_write(st->regmap, ADAQ8092_REG_RESET,
 			  FIELD_PREP(ADAQ8092_RESET, 1));
+	if (ret)
+		return ret;
+
+	return regmap_write(st->regmap, ADAQ8092_REG_DATA_FORMAT,
+			    ADAQ8092_TEST_CHECKERBOARD);
 }
 
 static int adaq8092_probe(struct spi_device *spi)
