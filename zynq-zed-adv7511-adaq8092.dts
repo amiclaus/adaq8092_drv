@@ -55,9 +55,6 @@
 		reg = <0>;
 		spi-max-frequency = <1000000>;
 
-		dmas = <&rx_dma 0>;
-		dma-names = "rx";
-
 		adc-pd1-gpios = <&gpio0 87 GPIO_ACTIVE_HIGH>;
 		adc-pd2-gpios = <&gpio0 88 GPIO_ACTIVE_HIGH>;
 		en-1p8-gpios = <&gpio0 89 GPIO_ACTIVE_HIGH>;
