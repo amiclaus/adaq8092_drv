@@ -23,6 +23,8 @@
 #include <linux/regulator/consumer.h>
 #include <linux/spi/spi.h>
 
+#include "cf_axi_adc.h"
+
 /* ADAQ8092 Register Map */
 #define ADAQ8092_REG_RESET		0x00
 #define ADAQ8092_REG_POWERDOWN		0x01
@@ -212,19 +214,6 @@ static int adaq8092_properties_parse(struct adaq8092_state *st)
 	return 0;
 }
 
-static int hw_submit_block(struct iio_dma_buffer_queue *queue,
-			   struct iio_dma_buffer_block *block)
-{
-	block->block.bytes_used = block->block.size;
-
-	return iio_dmaengine_buffer_submit_block(queue, block, DMA_DEV_TO_MEM);
-}
-
-static const struct iio_dma_buffer_ops dma_buffer_ops = {
-	.submit = hw_submit_block,
-	.abort = iio_dmaengine_buffer_abort,
-};
-
 static void adaq8092_powerup(struct adaq8092_state *st)
 {
 	gpiod_set_value(st->gpio_par_ser, 0);
@@ -247,30 +236,39 @@ static void adaq8092_clk_disable(void *data)
 	clk_disable_unprepare(data);
 }
 
-static int adaq8092_init(struct adaq8092_state *st, struct iio_dev *indio_dev)
+static int adaq8092_init(struct adaq8092_state *st)
 {
 	struct spi_device *spi = st->spi;
-	struct iio_buffer *buffer;
+	struct axiadc_converter	*conv;
 	int ret;
+
+	conv = devm_kzalloc(&st->spi->dev, sizeof(*conv), GFP_KERNEL);
+	if (conv == NULL)
+		return -ENOMEM;
 
 	ret = adaq8092_properties_parse(st);
 	if (ret)
 		return ret;
 
-	buffer = devm_iio_dmaengine_buffer_alloc(indio_dev->dev.parent, "rx",
-						 &dma_buffer_ops, indio_dev);
 	ret = clk_prepare_enable(st->clkin);
 	if (ret)
 		return ret;
 
-	if (IS_ERR(buffer))
-		return PTR_ERR(buffer);
 	ret = devm_add_action_or_reset(&spi->dev, adaq8092_clk_disable, st->clkin);
 	if (ret)
 		return ret;
 
-	iio_device_attach_buffer(indio_dev, buffer);
+	conv->spi = st->spi;
+	conv->clk = st->clkin;
+	conv->chip_info = &conv_chip_info;
+	conv->adc_output_mode = ADAQ8092_TWOSCOMP;
+	conv->reg_access = &adaq8092_reg_access;
+	conv->write_raw = &adaq8092_write_raw;
+	conv->read_raw = &adaq8092_read_raw;
+	conv->phy = st;
 
+	/* Without this, the axi_adc won't find the converter data */
+	spi_set_drvdata(st->spi, conv);
 
 	adaq8092_powerup(st);
 
@@ -302,18 +300,9 @@ static int adaq8092_probe(struct spi_device *spi)
 	st->regmap = regmap;
 	st->spi = spi;
 
-	indio_dev->info = &adaq8092_info;
-	indio_dev->name = "adaq8092";
-	indio_dev->channels = adaq8092_channels;
-	indio_dev->num_channels = ARRAY_SIZE(adaq8092_channels);
-
 	mutex_init(&st->lock);
 
-	ret = adaq8092_init(st, indio_dev);
-	if (ret)
-		return 0;
-
-	return devm_iio_device_register(&spi->dev, indio_dev);
+	return adaq8092_init(st);
 }
 
 static const struct spi_device_id adaq8092_id[] = {
