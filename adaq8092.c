@@ -124,6 +124,14 @@ static const struct regmap_config adaq8092_regmap_config = {
 	.max_register = 0x1A,
 };
 
+static struct adaq8092_state *adaq8092_get_data(struct iio_dev *indio_dev)
+{
+	struct axiadc_converter *conv;
+	conv = iio_device_get_drvdata(indio_dev);
+
+	return conv->phy;
+}
+
 static int adaq8092_read_raw(struct iio_dev *indio_dev,
 			     struct iio_chan_spec const *chan,
 			     int *val, int *val2, long info)
