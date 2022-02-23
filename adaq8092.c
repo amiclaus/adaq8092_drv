@@ -168,7 +168,7 @@ static int adaq8092_reg_access(struct iio_dev *indio_dev,
 			       unsigned int write_val,
 			       unsigned int *read_val)
 {
-	struct adaq8092_state *st = iio_priv(indio_dev);
+	struct adaq8092_state *st = adaq8092_get_data(indio_dev);
 
 	if (read_val)
 		return regmap_read(st->regmap, reg, read_val);
@@ -176,14 +176,40 @@ static int adaq8092_reg_access(struct iio_dev *indio_dev,
 		return regmap_write(st->regmap, reg, write_val);
 }
 
-static const struct iio_info adaq8092_info = {
-	.read_raw = adaq8092_read_raw,
-	.write_raw = adaq8092_write_raw,
-	.debugfs_reg_access = &adaq8092_reg_access,
+static const struct iio_enum adaq8092_pd_mode_enum = {
+	.items = adaq8092_pd_modes,
+	.num_items = ARRAY_SIZE(adaq8092_pd_modes),
+	.get = adaq8092_get_pd_mode,
+	.set = adaq8092_set_pd_mode,
 };
 
-static const struct iio_chan_spec adaq8092_channels[] = {
-	//TODO
+static const struct iio_chan_spec_ext_info adaq8092_ext_info[] = {
+	IIO_ENUM("pd_mode", IIO_SHARED_BY_ALL, &adaq8092_pd_mode_enum),
+	IIO_ENUM_AVAILABLE_SHARED("pd_mode", IIO_SHARED_BY_ALL, &adaq8092_pd_mode_enum),
+	{ },
+};
+
+#define ADAQ8092_CHAN(index)						\
+	{								\
+		.type = IIO_VOLTAGE,					\
+		.address = index,					\
+		.indexed = 1,						\
+		.channel = index,					\
+		.scan_index = index,					\
+		.ext_info = adaq8092_ext_info,				\
+		.scan_type = {						\
+			.sign = 's',					\
+			.realbits = 16,					\
+			.storagebits = 16,				\
+		},							\
+	}
+
+static const struct axiadc_chip_info conv_chip_info = {
+	.name = "adaq8092_axi_adc",
+	.max_rate = 105000000UL,
+	.num_channels = 2,
+	.channel[0] = ADAQ8092_CHAN(0),
+	.channel[1] = ADAQ8092_CHAN(1),
 };
 
 static int adaq8092_properties_parse(struct adaq8092_state *st)
