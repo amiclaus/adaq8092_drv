@@ -108,6 +108,13 @@ struct adaq8092_state {
 	struct gpio_desc	*gpio_par_ser;
 };
 
+static const char * const adaq8092_pd_modes[] = {
+	[0] = "normal",
+	[1] = "ch2_nap",
+	[2] = "ch1_ch2_nap",
+	[3] = "sleep"
+};
+
 static const struct regmap_config adaq8092_regmap_config = {
 	.reg_bits = 8,
 	.val_bits = 8,
@@ -128,6 +135,21 @@ static int adaq8092_write_raw(struct iio_dev *indio_dev,
 			      int val, int val2, long info)
 {
 	//TODO
+	return 0;
+}
+
+
+static int adaq8092_set_pd_mode(struct iio_dev *indio_dev,
+				   const struct iio_chan_spec *chan,
+				   unsigned int mode)
+{
+	struct adaq8092_state *st= iio_priv(indio_dev);
+	return 0;
+}
+
+static int adaq8092_get_pd_mode(struct iio_dev *indio_dev,
+				const struct iio_chan_spec *chan)
+{
 	return 0;
 }
 
@@ -182,10 +204,10 @@ static int adaq8092_properties_parse(struct adaq8092_state *st)
 		return dev_err_probe(&spi->dev, PTR_ERR(st->gpio_par_ser),
 				     "failed to get the Par/Ser GPIO\n");
 
-	// st->clkin = devm_clk_get(&spi->dev, "clkin");
-	// if (IS_ERR(st->clkin))
-	// 	return dev_err_probe(&spi->dev, PTR_ERR(st->clkin),
-	// 			     "failed to get the input clock\n");
+	st->clkin = devm_clk_get(&spi->dev, "clkin");
+	if (IS_ERR(st->clkin))
+		return dev_err_probe(&spi->dev, PTR_ERR(st->clkin),
+				     "failed to get the input clock\n");
 
 	return 0;
 }
@@ -220,10 +242,10 @@ static void adaq8092_powerup(struct adaq8092_state *st)
 	gpiod_set_value(st->gpio_adc_pd2, 1);
 }
 
-// static void adaq8092_clk_disable(void *data)
-// {
-// 	clk_disable_unprepare(data);
-// }
+static void adaq8092_clk_disable(void *data)
+{
+	clk_disable_unprepare(data);
+}
 
 static int adaq8092_init(struct adaq8092_state *st, struct iio_dev *indio_dev)
 {
@@ -237,19 +259,18 @@ static int adaq8092_init(struct adaq8092_state *st, struct iio_dev *indio_dev)
 
 	buffer = devm_iio_dmaengine_buffer_alloc(indio_dev->dev.parent, "rx",
 						 &dma_buffer_ops, indio_dev);
+	ret = clk_prepare_enable(st->clkin);
+	if (ret)
+		return ret;
 
 	if (IS_ERR(buffer))
 		return PTR_ERR(buffer);
+	ret = devm_add_action_or_reset(&spi->dev, adaq8092_clk_disable, st->clkin);
+	if (ret)
+		return ret;
 
 	iio_device_attach_buffer(indio_dev, buffer);
 
-	// ret = clk_prepare_enable(st->clkin);
-	// if (ret)
-	// 	return ret;
-
-	// ret = devm_add_action_or_reset(&spi->dev, adaq8092_clk_disable, st->clkin);
-	// if (ret)
-	// 	return ret;
 
 	adaq8092_powerup(st);
 
