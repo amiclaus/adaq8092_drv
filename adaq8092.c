@@ -105,15 +105,15 @@ enum adaq8092_out_test_modes {
 };
 
 struct adaq8092_state {
-	struct spi_device	*spi;
-	struct regmap		*regmap;
-	struct clk		*clkin;
+	struct spi_device		*spi;
+	struct regmap			*regmap;
+	struct clk			*clkin;
 	/* Protect against concurrent accesses to the device and data content */
-	struct mutex		lock;
-	struct gpio_desc	*gpio_adc_pd1;
-	struct gpio_desc	*gpio_adc_pd2;
-	struct gpio_desc	*gpio_en_1p8;
-	struct gpio_desc	*gpio_par_ser;
+	struct mutex			lock;
+	struct gpio_desc		*gpio_adc_pd1;
+	struct gpio_desc		*gpio_adc_pd2;
+	struct gpio_desc		*gpio_en_1p8;
+	struct gpio_desc		*gpio_par_ser;
 };
 
 static const char * const adaq8092_pd_modes[] = {
