@@ -600,6 +600,83 @@ static const struct iio_enum adaq8092_pd_mode_enum = {
 	.set = adaq8092_set_pd_mode,
 };
 
+static const struct iio_enum adaq8092_clk_pol_mode_enum = {
+	.items = adaq8092_clk_pol_modes,
+	.num_items = ARRAY_SIZE(adaq8092_clk_pol_modes),
+	.get = adaq8092_get_clk_pol_mode,
+	.set = adaq8092_set_clk_pol_mode,
+};
+
+static const struct iio_enum adaq8092_clk_phase_mode_enum = {
+	.items = adaq8092_clk_phase_modes,
+	.num_items = ARRAY_SIZE(adaq8092_clk_phase_modes),
+	.get = adaq8092_get_clk_phase_mode,
+	.set = adaq8092_set_clk_phase_mode,
+};
+
+static const struct iio_enum adaq8092_clk_dc_mode_enum = {
+	.items = adaq8092_clk_dc_modes,
+	.num_items = ARRAY_SIZE(adaq8092_clk_dc_modes),
+	.get = adaq8092_get_clk_dc_mode,
+	.set = adaq8092_set_clk_dc_mode,
+};
+
+static const struct iio_enum adaq8092_lvds_cur_mode_enum = {
+	.items = adaq8092_lvds_cur_modes,
+	.num_items = ARRAY_SIZE(adaq8092_lvds_cur_modes),
+	.get = adaq8092_get_lvds_cur_mode,
+	.set = adaq8092_set_lvds_cur_mode,
+};
+
+static const struct iio_enum adaq8092_lvds_term_mode_enum = {
+	.items = adaq8092_lvds_term_modes,
+	.num_items = ARRAY_SIZE(adaq8092_lvds_term_modes),
+	.get = adaq8092_get_lvds_term_mode,
+	.set = adaq8092_set_lvds_term_mode,
+};
+
+static const struct iio_enum adaq8092_dout_en_enum = {
+	.items = adaq8092_dout_en,
+	.num_items = ARRAY_SIZE(adaq8092_dout_en),
+	.get = adaq8092_get_dout_en,
+	.set = adaq8092_set_dout_en,
+};
+
+static const struct iio_enum adaq8092_dout_mode_enum = {
+	.items = adaq8092_dout_modes,
+	.num_items = ARRAY_SIZE(adaq8092_dout_modes),
+	.get = adaq8092_get_dout_mode,
+	.set = adaq8092_set_dout_mode,
+};
+
+static const struct iio_enum adaq8092_test_mode_enum = {
+	.items = adaq8092_test_modes,
+	.num_items = ARRAY_SIZE(adaq8092_test_modes),
+	.get = adaq8092_get_test_mode,
+	.set = adaq8092_set_test_mode,
+};
+
+static const struct iio_enum adaq8092_alt_pol_en_enum = {
+	.items = adaq8092_alt_pol_en,
+	.num_items = ARRAY_SIZE(adaq8092_alt_pol_en),
+	.get = adaq8092_get_alt_pol_en,
+	.set = adaq8092_set_alt_pol_en,
+};
+
+static const struct iio_enum adaq8092_data_rand_en_enum = {
+	.items = adaq8092_data_rand_en,
+	.num_items = ARRAY_SIZE(adaq8092_data_rand_en),
+	.get = adaq8092_get_data_rand_en,
+	.set = adaq8092_set_data_rand_en,
+};
+
+static const struct iio_enum adaq8092_twoscomp_enum = {
+	.items = adaq8092_twos_comp_mode,
+	.num_items = ARRAY_SIZE(adaq8092_twos_comp_mode),
+	.get = adaq8092_get_twos_comp,
+	.set = adaq8092_set_twos_comp,
+};
+
 static const struct iio_chan_spec_ext_info adaq8092_ext_info[] = {
 	IIO_ENUM("pd_mode", IIO_SHARED_BY_ALL, &adaq8092_pd_mode_enum),
 	IIO_ENUM_AVAILABLE_SHARED("pd_mode", IIO_SHARED_BY_ALL, &adaq8092_pd_mode_enum),
