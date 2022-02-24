@@ -170,6 +170,72 @@ static const char * const adaq8092_pd_modes[] = {
 	[ADAQ8092_SLEEP] = "sleep"
 };
 
+static const char * const adaq8092_clk_pol_modes[] = {
+	[ADAQ8092_CLK_POL_NORMAL] = "clk_pol_normal",
+	[ADAQ8092_CLK_POL_INVERTED] = "clk_pol_inverted"
+};
+
+static const char * const adaq8092_clk_phase_modes[] = {
+	[ADAQ8092_NO_DELAY] = "clk_phase_no_delay",
+	[ADAQ8092_CLKOUT_DELAY_45DEG] = "clk_phase_45deg",
+	[ADAQ8092_CLKOUT_DELAY_90DEG] = "clk_phase_90deg",
+	[ADAQ8092_CLKOUT_DELAY_180DEG] = "clk_phase_180deg"
+};
+
+static const char * const adaq8092_clk_dc_modes[] = {
+	[ADAQ8092_CLK_DC_STABILIZER_OFF] = "clk_dc_stabilizer_off",
+	[ADAQ8092_CLK_DC_STABILIZER_ON] = "clk_dc_stabilizer_on"
+};
+
+static const char * const adaq8092_lvds_cur_modes[] = {
+	[ADAQ8092_3M5A] = "lvds_current_3m5A",
+	[ADAQ8092_4MA] = "lvds_current_4mA",
+	[ADAQ8092_4M5A] = "lvds_current_4m5A",
+	[ADAQ8092_3MA] = "lvds_current_3mA",
+	[ADAQ8092_2M5A] = "lvds_current_2m5A",
+	[ADAQ8092_2M1A] = "lvds_current_3m1A",
+	[ADAQ8092_1M75] = "lvds_current_1m75A",
+};
+
+static const char * const adaq8092_lvds_term_modes[] = {
+	[ADAQ8092_TERM_OFF] = "lvds_internal_termination_off",
+	[ADAQ8092_TERM_ON] = "lvds_internal_termination_on"
+};
+
+static const char * const adaq8092_dout_en[] = {
+	[ADAQ8092_DOUT_ON] = "digital_output_on",
+	[ADAQ8092_DOUT_OFF] = "digital_output_off"
+};
+
+static const char * const adaq8092_dout_modes[] = {
+	[ADAQ8092_FULL_RATE_CMOS] = "full_rate_cmos_output",
+	[ADAQ8092_DOUBLE_RATE_LVDS] = "double_data_rate_lvds_output",
+	[ADAQ8092_DOUBLE_RATE_CMOS] = "double_data_rate_cmos_output"
+};
+
+static const char * const adaq8092_test_modes[] = {
+	[ADAQ8092_TEST_OFF] = "test_pattern_off",
+	[ADAQ8092_TEST_ONES] = "test_all_digital_zero",
+	[ADAQ8092_TEST_ZEROS] = "test_all_digital_one",
+	[ADAQ8092_TEST_CHECKERBOARD] = "test_checkerboard",
+	[ADAQ8092_TEST_ALTERNATING] = "test_alternating"
+};
+
+static const char * const adaq8092_alt_pol_en[] = {
+	[ADAQ8092_ALT_BIT_POL_OFF] = "alternate_bit_polarity_off",
+	[ADAQ8092_ALT_BIT_POL_ON] = "alternate_bit_polarity_on"
+};
+
+static const char * const adaq8092_data_rand_en[] = {
+	[ADAQ8092_DATA_RAND_OFF] = "data_randomizer_off",
+	[ADAQ8092_DATA_RAND_ON] = "data_randomizer_on"
+};
+
+static const char * const adaq8092_twos_comp_mode[] = {
+	[ADAQ8092_OFFSET_BINARY] = "offset_binary",
+	[ADAQ8092_TWOS_COMPLEMENT] = "twos_complement"
+};
+
 static const struct regmap_config adaq8092_regmap_config = {
 	.reg_bits = 8,
 	.val_bits = 8,
