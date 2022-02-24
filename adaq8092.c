@@ -134,6 +134,7 @@ static const struct regmap_config adaq8092_regmap_config = {
 static struct adaq8092_state *adaq8092_get_data(struct iio_dev *indio_dev)
 {
 	struct axiadc_converter *conv;
+
 	conv = iio_device_get_drvdata(indio_dev);
 
 	return conv->phy;
@@ -295,7 +296,7 @@ static int adaq8092_init(struct adaq8092_state *st)
 	int ret;
 
 	conv = devm_kzalloc(&st->spi->dev, sizeof(*conv), GFP_KERNEL);
-	if (conv == NULL)
+	if (!conv)
 		return -ENOMEM;
 
 	ret = adaq8092_properties_parse(st);
@@ -338,7 +339,6 @@ static int adaq8092_probe(struct spi_device *spi)
 	struct iio_dev *indio_dev;
 	struct regmap *regmap;
 	struct adaq8092_state *st;
-	int ret;
 
 	indio_dev = devm_iio_device_alloc(&spi->dev, sizeof(*st));
 	if (!indio_dev)
