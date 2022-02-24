@@ -77,6 +77,12 @@ enum adaq8092_clk_phase_delay {
 	ADAQ8092_CLKOUT_DELAY_180DEG
 };
 
+/*ADAQ8092 Clock Duty Cycle Stabilizer */
+enum adaq8092_clk_dutycycle {
+	ADAQ8092_CLK_DC_STABILIZER_OFF,
+	ADAQ8092_CLK_DC_STABILIZER_ON,
+};
+
 /* ADAQ8092 LVDS Output Current */
 enum adaq8092_lvds_out_current {
 	ADAQ8092_3M5A = 0,
@@ -88,11 +94,23 @@ enum adaq8092_lvds_out_current {
 	ADAQ8092_1M75 = 7
 };
 
+/* ADAQ8092 LVDS Internal Termination */
+enum adaq8092_internal_term {
+	ADAQ8092_TERM_OFF,
+	ADAQ8092_TERM_ON
+};
+
+/* ADAQ8092 Digital Output */
+enum adaq8092_dout_enable {
+	ADAQ8092_DOUT_ON,
+	ADAQ8092_DOUT_OFF
+};
+
 /* ADAQ8092 Digital Output Mode */
-enum adaq8092_out_modes {
+enum adaq8092_dout_modes {
 	ADAQ8092_FULL_RATE_CMOS,
 	ADAQ8092_DOUBLE_RATE_LVDS,
-	ADAQ8092_DOUBLE_RATE_CMOS,
+	ADAQ8092_DOUBLE_RATE_CMOS
 };
 
 /* ADAQ8092 Digital Test Pattern */
@@ -101,7 +119,24 @@ enum adaq8092_out_test_modes {
 	ADAQ8092_TEST_ONES,
 	ADAQ8092_TEST_ZEROS,
 	ADAQ8092_TEST_CHECKERBOARD,
-	ADAQ8092_TEST_ALTERNATING,
+	ADAQ8092_TEST_ALTERNATING
+};
+
+/* ADAQ8092 Alternate Bit Polarity Mode */
+enum adaq8092_alt_bit_pol {
+	ADAQ8092_ALT_BIT_POL_OFF,
+	ADAQ8092_ALT_BIT_POL_ON
+};
+
+/* ADAQ8092 Data Output Randomizer*/
+enum adaq8092_data_rand {
+	ADAQ8092_DATA_RAND_OFF,
+	ADAQ8092_DATA_RAND_ON
+};
+
+enum adaq8092_twoscomp {
+	ADAQ8092_OFFSET_BINARY,
+	ADAQ8092_TWOS_COMPLEMENT
 };
 
 struct adaq8092_state {
