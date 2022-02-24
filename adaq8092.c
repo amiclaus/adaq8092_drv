@@ -114,13 +114,14 @@ struct adaq8092_state {
 	struct gpio_desc		*gpio_adc_pd2;
 	struct gpio_desc		*gpio_en_1p8;
 	struct gpio_desc		*gpio_par_ser;
+	enum adaq8092_powerdown_modes	pd_mode;
 };
 
 static const char * const adaq8092_pd_modes[] = {
-	[0] = "normal",
-	[1] = "ch2_nap",
-	[2] = "ch1_ch2_nap",
-	[3] = "sleep"
+	[ADAQ8092_NORMAL_OP] = "normal",
+	[ADAQ8092_CH1_NORMAL_CH2_NAP] = "ch2_nap",
+	[ADAQ8092_CH1_CH2_NAP] = "ch1_ch2_nap",
+	[ADAQ8092_SLEEP] = "sleep"
 };
 
 static const struct regmap_config adaq8092_regmap_config = {
@@ -154,19 +155,30 @@ static int adaq8092_write_raw(struct iio_dev *indio_dev,
 	return 0;
 }
 
-
 static int adaq8092_set_pd_mode(struct iio_dev *indio_dev,
-				   const struct iio_chan_spec *chan,
-				   unsigned int mode)
+				const struct iio_chan_spec *chan,
+				unsigned int mode)
 {
-	struct adaq8092_state *st= iio_priv(indio_dev);
+	struct adaq8092_state *st = adaq8092_get_data(indio_dev);
+	int ret;
+
+	ret = regmap_update_bits(st->regmap, ADAQ8092_REG_POWERDOWN,
+				 ADAQ8092_POWERDOWN_MODE,
+				 FIELD_PREP(ADAQ8092_POWERDOWN_MODE, mode));
+	if (ret)
+		return ret;
+
+	st->pd_mode = mode;
+
 	return 0;
 }
 
 static int adaq8092_get_pd_mode(struct iio_dev *indio_dev,
 				const struct iio_chan_spec *chan)
 {
-	return 0;
+	struct adaq8092_state *st = adaq8092_get_data(indio_dev);
+
+	return st->pd_mode;
 }
 
 static int adaq8092_reg_access(struct iio_dev *indio_dev,
