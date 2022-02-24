@@ -824,7 +824,7 @@ static int adaq8092_init(struct adaq8092_state *st)
 	conv->spi = st->spi;
 	conv->clk = st->clkin;
 	conv->chip_info = &conv_chip_info;
-	conv->adc_output_mode = ADAQ8092_TWOSCOMP;
+	conv->adc_output_mode = ADAQ8092_TWOS_COMPLEMENT;
 	conv->reg_access = &adaq8092_reg_access;
 	conv->write_raw = &adaq8092_write_raw;
 	conv->read_raw = &adaq8092_read_raw;
