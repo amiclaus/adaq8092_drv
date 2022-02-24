@@ -841,13 +841,17 @@ static int adaq8092_init(struct adaq8092_state *st)
 	if (ret)
 		return ret;
 
+	st->dout_mode = ADAQ8092_DOUBLE_RATE_LVDS;
+
 	ret = regmap_update_bits(st->regmap, ADAQ8092_REG_OUTPUT_MODE, ADAQ8092_OUTMODE,
-				 FIELD_PREP(ADAQ8092_OUTMODE, ADAQ8092_DOUBLE_RATE_LVDS));
+				 FIELD_PREP(ADAQ8092_OUTMODE, st->dout_mode));
 	if (ret)
 		return ret;
 
+	st->twos_comp = ADAQ8092_TWOS_COMPLEMENT;
+
 	return regmap_update_bits(st->regmap, ADAQ8092_REG_DATA_FORMAT, ADAQ8092_TWOSCOMP,
-				  FIELD_PREP(ADAQ8092_TWOSCOMP, 1));
+				  FIELD_PREP(ADAQ8092_TWOSCOMP, st->twos_comp));
 }
 
 static int adaq8092_probe(struct spi_device *spi)
