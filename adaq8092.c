@@ -150,6 +150,17 @@ struct adaq8092_state {
 	struct gpio_desc		*gpio_en_1p8;
 	struct gpio_desc		*gpio_par_ser;
 	enum adaq8092_powerdown_modes	pd_mode;
+	enum adaq8092_clk_invert	clk_pol_mode;
+	enum adaq8092_clk_phase_delay	clk_phase_mode;
+	enum adaq8092_clk_dutycycle	clk_dc_mode;
+	enum adaq8092_lvds_out_current	lvds_cur_mode;
+	enum adaq8092_internal_term	lvds_term_mode;
+	enum adaq8092_dout_enable	dout_en;
+	enum adaq8092_dout_modes	dout_mode;
+	enum adaq8092_out_test_modes	test_mode;
+	enum adaq8092_alt_bit_pol	alt_bit_pol_en;
+	enum adaq8092_data_rand		data_rand_en;
+	enum adaq8092_twoscomp		twos_comp;
 };
 
 static const char * const adaq8092_pd_modes[] = {
