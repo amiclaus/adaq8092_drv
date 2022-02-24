@@ -208,13 +208,13 @@ static const struct iio_chan_spec_ext_info adaq8092_ext_info[] = {
 	{ },
 };
 
-#define ADAQ8092_CHAN(index)						\
+#define ADAQ8092_CHAN(_channel)						\
 	{								\
 		.type = IIO_VOLTAGE,					\
-		.address = index,					\
+		.address = _channel,					\
 		.indexed = 1,						\
-		.channel = index,					\
-		.scan_index = index,					\
+		.channel = _channel,					\
+		.scan_index = _channel,					\
 		.ext_info = adaq8092_ext_info,				\
 		.scan_type = {						\
 			.sign = 's',					\
