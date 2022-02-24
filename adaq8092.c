@@ -340,12 +340,17 @@ static int adaq8092_init(struct adaq8092_state *st)
 	adaq8092_powerup(st);
 
 	ret = regmap_write(st->regmap, ADAQ8092_REG_RESET,
-			  FIELD_PREP(ADAQ8092_RESET, 1));
+			   FIELD_PREP(ADAQ8092_RESET, 1));
 	if (ret)
 		return ret;
 
-	return regmap_write(st->regmap, ADAQ8092_REG_DATA_FORMAT,
-			    ADAQ8092_TEST_CHECKERBOARD);
+	ret = regmap_update_bits(st->regmap, ADAQ8092_REG_OUTPUT_MODE, ADAQ8092_OUTMODE,
+				 FIELD_PREP(ADAQ8092_OUTMODE, ADAQ8092_DOUBLE_RATE_LVDS));
+	if (ret)
+		return ret;
+
+	return regmap_update_bits(st->regmap, ADAQ8092_REG_DATA_FORMAT, ADAQ8092_TWOSCOMP,
+				  FIELD_PREP(ADAQ8092_TWOSCOMP, 1));
 }
 
 static int adaq8092_probe(struct spi_device *spi)
