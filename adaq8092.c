@@ -289,6 +289,19 @@ static void adaq8092_clk_disable(void *data)
 	clk_disable_unprepare(data);
 }
 
+static int adaq8092_post_setup(struct iio_dev *indio_dev)
+{
+	struct axiadc_state *st = iio_priv(indio_dev);
+	struct axiadc_converter *conv = iio_device_get_drvdata(indio_dev);
+	int i;
+
+	for (i = 0; i < conv->chip_info->num_channels; i++)
+		axiadc_write(st, ADI_REG_CHAN_CNTRL(i), ADI_ENABLE | ADI_FORMAT_ENABLE
+			     | ADI_FORMAT_SIGNEXT);
+
+	return 0;
+}
+
 static int adaq8092_init(struct adaq8092_state *st)
 {
 	struct spi_device *spi = st->spi;
@@ -318,6 +331,7 @@ static int adaq8092_init(struct adaq8092_state *st)
 	conv->reg_access = &adaq8092_reg_access;
 	conv->write_raw = &adaq8092_write_raw;
 	conv->read_raw = &adaq8092_read_raw;
+	conv->post_setup = &adaq8092_post_setup;
 	conv->phy = st;
 
 	/* Without this, the axi_adc won't find the converter data */
