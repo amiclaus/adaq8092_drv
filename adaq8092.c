@@ -63,6 +63,12 @@ enum adaq8092_powerdown_modes {
 	ADAQ8092_SLEEP
 };
 
+/* ADAQ8092 Output Clock Invert */
+enum adaq8092_clk_invert {
+	ADAQ8092_CLK_POL_NORMAL,
+	ADAQ8092_CLK_POL_INVERTED
+};
+
 /* ADAQ8092 Output Clock Phase Delay Bits */
 enum adaq8092_clk_phase_delay {
 	ADAQ8092_NO_DELAY,
