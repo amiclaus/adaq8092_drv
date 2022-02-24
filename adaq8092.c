@@ -294,6 +294,292 @@ static int adaq8092_get_pd_mode(struct iio_dev *indio_dev,
 	return st->pd_mode;
 }
 
+static int adaq8092_set_clk_pol_mode(struct iio_dev *indio_dev,
+				     const struct iio_chan_spec *chan,
+				     unsigned int mode)
+{
+	struct adaq8092_state *st = adaq8092_get_data(indio_dev);
+	int ret;
+
+	ret = regmap_update_bits(st->regmap, ADAQ8092_REG_TIMING,
+				 ADAQ8092_CLK_INVERT,
+				 FIELD_PREP(ADAQ8092_CLK_INVERT, mode));
+	if (ret)
+		return ret;
+
+	st->clk_pol_mode = mode;
+
+	return 0;
+}
+
+static int adaq8092_get_clk_pol_mode(struct iio_dev *indio_dev,
+				     const struct iio_chan_spec *chan)
+{
+	struct adaq8092_state *st = adaq8092_get_data(indio_dev);
+
+	return st->clk_pol_mode;
+}
+
+static int adaq8092_set_clk_phase_mode(struct iio_dev *indio_dev,
+				       const struct iio_chan_spec *chan,
+				       unsigned int mode)
+{
+	struct adaq8092_state *st = adaq8092_get_data(indio_dev);
+	int ret;
+
+	ret = regmap_update_bits(st->regmap, ADAQ8092_REG_TIMING,
+				 ADAQ8092_CLK_PHASE,
+				 FIELD_PREP(ADAQ8092_CLK_PHASE, mode));
+	if (ret)
+		return ret;
+
+	st->clk_phase_mode = mode;
+
+	return 0;
+}
+
+static int adaq8092_get_clk_phase_mode(struct iio_dev *indio_dev,
+				       const struct iio_chan_spec *chan)
+{
+	struct adaq8092_state *st = adaq8092_get_data(indio_dev);
+
+	return st->clk_phase_mode;
+}
+
+static int adaq8092_set_clk_dc_mode(struct iio_dev *indio_dev,
+				    const struct iio_chan_spec *chan,
+				    unsigned int mode)
+{
+	struct adaq8092_state *st = adaq8092_get_data(indio_dev);
+	int ret;
+
+	ret = regmap_update_bits(st->regmap, ADAQ8092_REG_TIMING,
+				 ADAQ8092_CLK_DUTYCYCLE,
+				 FIELD_PREP(ADAQ8092_CLK_DUTYCYCLE, mode));
+	if (ret)
+		return ret;
+
+	st->clk_dc_mode = mode;
+
+	return 0;
+}
+
+static int adaq8092_get_clk_dc_mode(struct iio_dev *indio_dev,
+				    const struct iio_chan_spec *chan)
+{
+	struct adaq8092_state *st = adaq8092_get_data(indio_dev);
+
+	return st->clk_dc_mode;
+}
+
+static int adaq8092_set_lvds_cur_mode(struct iio_dev *indio_dev,
+				      const struct iio_chan_spec *chan,
+				      unsigned int mode)
+{
+	struct adaq8092_state *st = adaq8092_get_data(indio_dev);
+	int ret;
+
+	ret = regmap_update_bits(st->regmap, ADAQ8092_REG_OUTPUT_MODE,
+				 ADAQ8092_ILVDS,
+				 FIELD_PREP(ADAQ8092_ILVDS, mode));
+	if (ret)
+		return ret;
+
+	st->lvds_cur_mode = mode;
+
+	return 0;
+}
+
+static int adaq8092_get_lvds_cur_mode(struct iio_dev *indio_dev,
+				      const struct iio_chan_spec *chan)
+{
+	struct adaq8092_state *st = adaq8092_get_data(indio_dev);
+
+	return st->lvds_cur_mode;
+}
+
+static int adaq8092_set_lvds_term_mode(struct iio_dev *indio_dev,
+				       const struct iio_chan_spec *chan,
+				       unsigned int mode)
+{
+	struct adaq8092_state *st = adaq8092_get_data(indio_dev);
+	int ret;
+
+	ret = regmap_update_bits(st->regmap, ADAQ8092_REG_OUTPUT_MODE,
+				 ADAQ8092_TERMON,
+				 FIELD_PREP(ADAQ8092_TERMON, mode));
+	if (ret)
+		return ret;
+
+	st->lvds_term_mode = mode;
+
+	return 0;
+}
+
+static int adaq8092_get_lvds_term_mode(struct iio_dev *indio_dev,
+				       const struct iio_chan_spec *chan)
+{
+	struct adaq8092_state *st = adaq8092_get_data(indio_dev);
+
+	return st->lvds_term_mode;
+}
+
+static int adaq8092_set_dout_en(struct iio_dev *indio_dev,
+				const struct iio_chan_spec *chan,
+				unsigned int mode)
+{
+	struct adaq8092_state *st = adaq8092_get_data(indio_dev);
+	int ret;
+
+	ret = regmap_update_bits(st->regmap, ADAQ8092_REG_OUTPUT_MODE,
+				 ADAQ8092_OUTOFF,
+				 FIELD_PREP(ADAQ8092_OUTOFF, mode));
+	if (ret)
+		return ret;
+
+	st->dout_en = mode;
+
+	return 0;
+}
+
+static int adaq8092_get_dout_en(struct iio_dev *indio_dev,
+				const struct iio_chan_spec *chan)
+{
+	struct adaq8092_state *st = adaq8092_get_data(indio_dev);
+
+	return st->dout_en;
+}
+
+static int adaq8092_set_dout_mode(struct iio_dev *indio_dev,
+				  const struct iio_chan_spec *chan,
+				  unsigned int mode)
+{
+	struct adaq8092_state *st = adaq8092_get_data(indio_dev);
+	int ret;
+
+	ret = regmap_update_bits(st->regmap, ADAQ8092_REG_OUTPUT_MODE,
+				 ADAQ8092_OUTMODE,
+				 FIELD_PREP(ADAQ8092_OUTMODE, mode));
+	if (ret)
+		return ret;
+
+	st->dout_mode = mode;
+
+	return 0;
+}
+
+static int adaq8092_get_dout_mode(struct iio_dev *indio_dev,
+				  const struct iio_chan_spec *chan)
+{
+	struct adaq8092_state *st = adaq8092_get_data(indio_dev);
+
+	return st->dout_mode;
+}
+
+static int adaq8092_set_test_mode(struct iio_dev *indio_dev,
+				  const struct iio_chan_spec *chan,
+				  unsigned int mode)
+{
+	struct adaq8092_state *st = adaq8092_get_data(indio_dev);
+	int ret;
+
+	ret = regmap_update_bits(st->regmap, ADAQ8092_REG_DATA_FORMAT,
+				 ADAQ8092_OUTTEST,
+				 FIELD_PREP(ADAQ8092_OUTTEST, mode));
+	if (ret)
+		return ret;
+
+	st->test_mode = mode;
+
+	return 0;
+}
+
+static int adaq8092_get_test_mode(struct iio_dev *indio_dev,
+				  const struct iio_chan_spec *chan)
+{
+	struct adaq8092_state *st = adaq8092_get_data(indio_dev);
+
+	return st->test_mode;
+}
+
+static int adaq8092_set_alt_pol_en(struct iio_dev *indio_dev,
+				   const struct iio_chan_spec *chan,
+				   unsigned int mode)
+{
+	struct adaq8092_state *st = adaq8092_get_data(indio_dev);
+	int ret;
+
+	ret = regmap_update_bits(st->regmap, ADAQ8092_REG_DATA_FORMAT,
+				 ADAQ8092_ABP,
+				 FIELD_PREP(ADAQ8092_ABP, mode));
+	if (ret)
+		return ret;
+
+	st->alt_bit_pol_en = mode;
+
+	return 0;
+}
+
+static int adaq8092_get_alt_pol_en(struct iio_dev *indio_dev,
+				   const struct iio_chan_spec *chan)
+{
+	struct adaq8092_state *st = adaq8092_get_data(indio_dev);
+
+	return st->alt_bit_pol_en;
+}
+
+static int adaq8092_set_data_rand_en(struct iio_dev *indio_dev,
+				     const struct iio_chan_spec *chan,
+				     unsigned int mode)
+{
+	struct adaq8092_state *st = adaq8092_get_data(indio_dev);
+	int ret;
+
+	ret = regmap_update_bits(st->regmap, ADAQ8092_REG_DATA_FORMAT,
+				 ADAQ8092_RAND,
+				 FIELD_PREP(ADAQ8092_RAND, mode));
+	if (ret)
+		return ret;
+
+	st->data_rand_en = mode;
+
+	return 0;
+}
+
+static int adaq8092_get_data_rand_en(struct iio_dev *indio_dev,
+				     const struct iio_chan_spec *chan)
+{
+	struct adaq8092_state *st = adaq8092_get_data(indio_dev);
+
+	return st->data_rand_en;
+}
+
+static int adaq8092_set_twos_comp(struct iio_dev *indio_dev,
+				  const struct iio_chan_spec *chan,
+				  unsigned int mode)
+{
+	struct adaq8092_state *st = adaq8092_get_data(indio_dev);
+	int ret;
+
+	ret = regmap_update_bits(st->regmap, ADAQ8092_REG_DATA_FORMAT,
+				 ADAQ8092_TWOSCOMP,
+				 FIELD_PREP(ADAQ8092_TWOSCOMP, mode));
+	if (ret)
+		return ret;
+
+	st->twos_comp = mode;
+
+	return 0;
+}
+
+static int adaq8092_get_twos_comp(struct iio_dev *indio_dev,
+				  const struct iio_chan_spec *chan)
+{
+	struct adaq8092_state *st = adaq8092_get_data(indio_dev);
+
+	return st->twos_comp;
+}
+
 static int adaq8092_reg_access(struct iio_dev *indio_dev,
 			       unsigned int reg,
 			       unsigned int write_val,
