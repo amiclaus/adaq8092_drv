@@ -3,7 +3,7 @@
  * Analog Devices ADAQ8092
  * https://wiki.analog.com/resources/tools-software/linux-drivers/iio-adc/adaq8092
  *
- * hdl_project: <adaq8092evb/zed>
+ * hdl_project: <adaq8092_fmc/zed>
  * board_revision: <>
  *
  * Copyright (C) 2022 Analog Devices Inc.
