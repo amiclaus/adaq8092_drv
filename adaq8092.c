@@ -252,22 +252,6 @@ static struct adaq8092_state *adaq8092_get_data(struct iio_dev *indio_dev)
 	return conv->phy;
 }
 
-static int adaq8092_read_raw(struct iio_dev *indio_dev,
-			     struct iio_chan_spec const *chan,
-			     int *val, int *val2, long info)
-{
-	//TODO
-	return 0;
-}
-
-static int adaq8092_write_raw(struct iio_dev *indio_dev,
-			      struct iio_chan_spec const *chan,
-			      int val, int val2, long info)
-{
-	//TODO
-	return 0;
-}
-
 static int adaq8092_set_pd_mode(struct iio_dev *indio_dev,
 				const struct iio_chan_spec *chan,
 				unsigned int mode)
@@ -826,8 +810,6 @@ static int adaq8092_init(struct adaq8092_state *st)
 	conv->chip_info = &conv_chip_info;
 	conv->adc_output_mode = ADAQ8092_TWOS_COMPLEMENT;
 	conv->reg_access = &adaq8092_reg_access;
-	conv->write_raw = &adaq8092_write_raw;
-	conv->read_raw = &adaq8092_read_raw;
 	conv->post_setup = &adaq8092_post_setup;
 	conv->phy = st;
 
