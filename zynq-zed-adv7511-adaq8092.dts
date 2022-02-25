@@ -1,12 +1,12 @@
 // SPDX-License-Identifier: GPL-2.0
 /*
- * Analog Devices AD7768
- * https://wiki.analog.com/resources/tools-software/linux-drivers/iio-adc/ad7768
+ * Analog Devices ADAQ8092
+ * https://wiki.analog.com/resources/tools-software/linux-drivers/iio-adc/adaq8092
  *
- * hdl_project: <ad7768evb/zed>
+ * hdl_project: <adaq8092evb/zed>
  * board_revision: <>
  *
- * Copyright (C) 2016-2019 Analog Devices Inc.
+ * Copyright (C) 2022 Analog Devices Inc.
  */
 /dts-v1/;
 
@@ -16,7 +16,7 @@
 
 / {
 	clocks {
-		ad7768_clkin: clock@0 {
+		adaq8092_clkin: clock@0 {
 			#clock-cells = <0>;
 			compatible = "fixed-clock";
 			clock-frequency = <80000000>;
@@ -68,7 +68,7 @@
 		en-1p8-gpios = <&gpio0 89 GPIO_ACTIVE_HIGH>;
 		par-ser-gpios = <&gpio0 86 GPIO_ACTIVE_HIGH>;
 
-		clocks = <&ad7768_clkin>;
+		clocks = <&adaq8092_clkin>;
 		clock-names = "clkin";
 	};
 };
