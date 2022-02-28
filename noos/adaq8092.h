@@ -46,6 +46,7 @@
 #include <string.h>
 #include "no-os/util.h"
 #include "no-os/spi.h"
+#include "no-os/gpio.h"
 
 /******************************************************************************/
 /********************** Macros and Constants Definitions **********************/
@@ -176,7 +177,7 @@ enum adaq8092_twoscomp {
  * @struct adaq8092_init
  * @brief ADAQ8092 Device structure.
  */
-struct adaq8092_init {
+struct adaq8092_init_param {
 	/** Device communication descriptor */
 	struct spi_init_param 		*spi_init;
 	struct gpio_init_param		*gpio_adc_pd1_param;
@@ -227,89 +228,104 @@ struct adaq8092_dev {
 /******************************************************************************/
 
 /* Read device register. */
-int adaq8092_read(struct adaq8092_dev *dev, uint8_t reg_addr, uint8_t *reg_data);
+int adaq8092_read(struct adaq8092_dev *dev, uint8_t reg_addr,
+		  uint8_t *reg_data);
 
 /* Write device register. */
-int adaq8092_write(struct adaq8092_dev *dev, uint8_t reg_addr, uint8_t reg_data);
+int adaq8092_write(struct adaq8092_dev *dev, uint8_t reg_addr,
+		   uint8_t reg_data);
 
 /* Update specific register bits. */
-int adaq8092_update_bits(struct adpd410x_dev *dev, uint8_t reg_addr,
+int adaq8092_update_bits(struct adaq8092_dev *dev, uint8_t reg_addr,
 			 uint8_t mask, uint8_t reg_data);
 
 /* Initialize the device. */
-int adaq8092_init(struct adaq8092_dev **device, struct adaq8092_init_param init_param);
+int adaq8092_init(struct adaq8092_dev **device,
+		  struct adaq8092_init_param init_param);
 
 /* Remove the device and release resources. */
 int adaq8092_remove(struct adaq8092_dev *dev);
 
 /* Set the device powerodown mode. */
-int adaq8092_set_pd_mode(struct adaq8092_dev *dev, enum adaq8092_powerdown_modes mode);
+int adaq8092_set_pd_mode(struct adaq8092_dev *dev,
+			 enum adaq8092_powerdown_modes mode);
 
 /* Get the device powerdown mode. */
 int adaq8092_get_pd_mode(struct adaq8092_dev *dev);
 
 /* Set the clock polarity mode. */
-int adaq8092_set_clk_pol_mode(struct adaq8092_dev *dev, enum adaq8092_clk_invert mode);
+int adaq8092_set_clk_pol_mode(struct adaq8092_dev *dev,
+			      enum adaq8092_clk_invert mode);
 
 /* Get the clock polarity mode. */
 int adaq8092_get_clk_pol_mode(struct adaq8092_dev *dev);
 
 /* Set the clock phase delay mode. */
-int adaq8092_set_clk_phase_mode(struct adaq8092_dev *dev, enum adaq8092_clk_phase_delay mode);
+int adaq8092_set_clk_phase_mode(struct adaq8092_dev *dev,
+				enum adaq8092_clk_phase_delay mode);
 
 /* Get the clock phase delay mode. */
 int adaq8092_get_clk_phase_mode(struct adaq8092_dev *dev);
 
 /* Set the clock duty cycle stabilizer mode. */
-int adaq8092_set_clk_dc_mode(struct adaq8092_dev *dev, enum adaq8092_clk_dutycycle mode);
+int adaq8092_set_clk_dc_mode(struct adaq8092_dev *dev,
+			     enum adaq8092_clk_dutycycle mode);
 
 /* Get the clock duty cycle stabilizer mode. */
 int adaq8092_get_clk_dc_mode(struct adaq8092_dev *dev);
 
 /* Set the LVDS output current mode. */
-int adaq8092_set_lvds_cur_mode(struct adaq8092_dev *dev, enum adaq8092_lvds_out_current mode);
+int adaq8092_set_lvds_cur_mode(struct adaq8092_dev *dev,
+			       enum adaq8092_lvds_out_current mode);
 
 /* Get the LVDS output current mode. */
 int adaq8092_get_lvds_cur_mode(struct adaq8092_dev *dev);
 
 /* Set the LVDS internal temination mode. */
-int adaq8092_set_lvds_term_mode(struct adaq8092_dev *dev, enum adaq8092_internal_term mode);
+int adaq8092_set_lvds_term_mode(struct adaq8092_dev *dev,
+				enum adaq8092_internal_term mode);
 
 /* Get the LVDS internal temination device mode. */
 int adaq8092_get_lvds_term_mode(struct adaq8092_dev *dev);
 
 /* Set digital outputs. */
-int adaq8092_set_dout_en(struct adaq8092_dev *dev, enum adaq8092_dout_enable mode);
+int adaq8092_set_dout_en(struct adaq8092_dev *dev,
+			 enum adaq8092_dout_enable mode);
 
 /* Get digital outputs. */
 int adaq8092_get_dout_en(struct adaq8092_dev *dev);
 
 /* Set the digital output mode. */
-int adaq8092_set_dout_mode(struct adaq8092_dev *dev, enum adaq8092_dout_modes mode);
+int adaq8092_set_dout_mode(struct adaq8092_dev *dev,
+			   enum adaq8092_dout_modes mode);
 
 /* Get the digital output mode. */
 int adaq8092_get_dout_mode(struct adaq8092_dev *dev);
 
 /* Set digital output test pattern mode. */
-int adaq8092_set_test_mode(struct adaq8092_dev *dev, enum adaq8092_out_test_modes mode);
+int adaq8092_set_test_mode(struct adaq8092_dev *dev,
+			   enum adaq8092_out_test_modes mode);
 
 /* Get digital output test pattern mode. */
 int adaq8092_get_test_mode(struct adaq8092_dev *dev);
 
 /* Set the alternate bit polarity mode. */
-int adaq8092_set_alt_pol_en(struct adaq8092_dev *dev, enum adaq8092_alt_bit_pol mode);
+int adaq8092_set_alt_pol_en(struct adaq8092_dev *dev,
+			    enum adaq8092_alt_bit_pol mode);
 
 /* Get the alternate bit polarity mode. */
 int adaq8092_get_alt_pol_en(struct adaq8092_dev *dev);
 
 /* Set the data output randomizer mode. */
-int adaq8092_set_data_rand_en(struct adaq8092_dev *dev, enum adaq8092_data_rand	mode);
+int adaq8092_set_data_rand_en(struct adaq8092_dev *dev,
+			      enum adaq8092_data_rand	mode);
 
 /* Get the data output randomizer mode. */
 int adaq8092_get_data_rand_en(struct adaq8092_dev *dev);
 
 /* Set the Tows Complement mode. */
-int adaq8092_set_twos_comp(struct adaq8092_dev *dev, enum adaq8092_twoscomp mode);
+int adaq8092_set_twos_comp(struct adaq8092_dev *dev,
+			   enum adaq8092_twoscomp mode);
 
 /* Get the Tows Complement mode. */
 int adaq8092_get_twos_comp(struct adaq8092_dev *dev);
