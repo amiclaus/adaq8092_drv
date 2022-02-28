@@ -221,7 +221,6 @@ int adaq8092_remove(struct adaq8092_dev *dev)
 
 int adaq8092_set_pd_mode(struct adaq8092_dev *dev, enum adaq8092_powerdown_modes mode)
 {
-	struct adaq8092_state *st = adaq8092_get_data(indio_dev);
 	int ret;
 
 	ret = adaq8092_update_bits(dev->spi_desc, ADAQ8092_REG_POWERDOWN,
@@ -237,14 +236,11 @@ int adaq8092_set_pd_mode(struct adaq8092_dev *dev, enum adaq8092_powerdown_modes
 
 int adaq8092_get_pd_mode(struct adaq8092_dev *dev)
 {
-	struct adaq8092_state *st = adaq8092_get_data(indio_dev);
-
 	return dev->pd_mode;
 }
 
 int adaq8092_set_clk_pol_mode(struct adaq8092_dev *dev, enum adaq8092_clk_invert mode)
 {
-	struct adaq8092_state *st = adaq8092_get_data(indio_dev);
 	int ret;
 
 	ret = adaq8092_update_bits(dev->spi_desc, ADAQ8092_REG_TIMING,
@@ -260,14 +256,11 @@ int adaq8092_set_clk_pol_mode(struct adaq8092_dev *dev, enum adaq8092_clk_invert
 
 int adaq8092_get_clk_pol_mode(struct adaq8092_dev *dev)
 {
-	struct adaq8092_state *st = adaq8092_get_data(indio_dev);
-
 	return dev->clk_pol_mode;
 }
 
 int adaq8092_set_clk_phase_mode(struct adaq8092_dev *dev, enum adaq8092_clk_phase_delay mode)
 {
-	struct adaq8092_state *st = adaq8092_get_data(indio_dev);
 	int ret;
 
 	ret = adaq8092_update_bits(dev->spi_desc, ADAQ8092_REG_TIMING,
@@ -283,14 +276,11 @@ int adaq8092_set_clk_phase_mode(struct adaq8092_dev *dev, enum adaq8092_clk_phas
 
 int adaq8092_get_clk_phase_mode(struct adaq8092_dev *dev)
 {
-	struct adaq8092_state *st = adaq8092_get_data(indio_dev);
-
 	return dev->clk_phase_mode;
 }
 
 int adaq8092_set_clk_dc_mode(struct adaq8092_dev *dev, enum adaq8092_clk_dutycycle mode)
 {
-	struct adaq8092_state *st = adaq8092_get_data(indio_dev);
 	int ret;
 
 	ret = adaq8092_update_bits(dev->spi_desc, ADAQ8092_REG_TIMING,
@@ -306,14 +296,11 @@ int adaq8092_set_clk_dc_mode(struct adaq8092_dev *dev, enum adaq8092_clk_dutycyc
 
 int adaq8092_get_clk_dc_mode(struct adaq8092_dev *dev)
 {
-	struct adaq8092_state *st = adaq8092_get_data(indio_dev);
-
 	return dev->clk_dc_mode;
 }
 
 int adaq8092_set_lvds_cur_mode(struct adaq8092_dev *dev, enum adaq8092_lvds_out_current mode)
 {
-	struct adaq8092_state *st = adaq8092_get_data(indio_dev);
 	int ret;
 
 	ret = adaq8092_update_bits(dev->spi_desc, ADAQ8092_REG_OUTPUT_MODE,
@@ -329,14 +316,11 @@ int adaq8092_set_lvds_cur_mode(struct adaq8092_dev *dev, enum adaq8092_lvds_out_
 
 int adaq8092_get_lvds_cur_mode(struct adaq8092_dev *dev)
 {
-	struct adaq8092_state *st = adaq8092_get_data(indio_dev);
-
 	return dev->lvds_cur_mode;
 }
 
 int adaq8092_set_lvds_term_mode(struct adaq8092_dev *dev, enum adaq8092_internal_term mode)
 {
-	struct adaq8092_state *st = adaq8092_get_data(indio_dev);
 	int ret;
 
 	ret = adaq8092_update_bits(dev->spi_desc, ADAQ8092_REG_OUTPUT_MODE,
@@ -352,14 +336,11 @@ int adaq8092_set_lvds_term_mode(struct adaq8092_dev *dev, enum adaq8092_internal
 
 int adaq8092_get_lvds_term_mode(struct adaq8092_dev *dev)
 {
-	struct adaq8092_state *st = adaq8092_get_data(indio_dev);
-
 	return dev->lvds_term_mode;
 }
 
 int adaq8092_set_dout_en(struct adaq8092_dev *dev, enum adaq8092_dout_enable mode)
 {
-	struct adaq8092_state *st = adaq8092_get_data(indio_dev);
 	int ret;
 
 	ret = adaq8092_update_bits(dev->spi_desc, ADAQ8092_REG_OUTPUT_MODE,
@@ -375,14 +356,11 @@ int adaq8092_set_dout_en(struct adaq8092_dev *dev, enum adaq8092_dout_enable mod
 
 int adaq8092_get_dout_en(struct adaq8092_dev *dev)
 {
-	struct adaq8092_state *st = adaq8092_get_data(indio_dev);
-
 	return dev->dout_en;
 }
 
 int adaq8092_set_dout_mode(struct adaq8092_dev *dev, enum adaq8092_dout_modes mode)
 {
-	struct adaq8092_state *st = adaq8092_get_data(indio_dev);
 	int ret;
 
 	ret = adaq8092_update_bits(dev->spi_desc, ADAQ8092_REG_OUTPUT_MODE,
@@ -398,14 +376,11 @@ int adaq8092_set_dout_mode(struct adaq8092_dev *dev, enum adaq8092_dout_modes mo
 
 int adaq8092_get_dout_mode(struct adaq8092_dev *dev)
 {
-	struct adaq8092_state *st = adaq8092_get_data(indio_dev);
-
 	return dev->dout_mode;
 }
 
 int adaq8092_set_test_mode(struct adaq8092_dev *dev, enum adaq8092_out_test_modes mode)
 {
-	struct adaq8092_state *st = adaq8092_get_data(indio_dev);
 	int ret;
 
 	ret = adaq8092_update_bits(dev->spi_desc, ADAQ8092_REG_DATA_FORMAT,
@@ -421,14 +396,12 @@ int adaq8092_set_test_mode(struct adaq8092_dev *dev, enum adaq8092_out_test_mode
 
 int adaq8092_get_test_mode(struct adaq8092_dev *dev)
 {
-	struct adaq8092_state *st = adaq8092_get_data(indio_dev);
 
 	return dev->test_mode;
 }
 
 int adaq8092_set_alt_pol_en(struct adaq8092_dev *dev, enum adaq8092_alt_bit_pol mode)
 {
-	struct adaq8092_state *st = adaq8092_get_data(indio_dev);
 	int ret;
 
 	ret = adaq8092_update_bits(dev->spi_desc, ADAQ8092_REG_DATA_FORMAT,
@@ -444,14 +417,11 @@ int adaq8092_set_alt_pol_en(struct adaq8092_dev *dev, enum adaq8092_alt_bit_pol 
 
 int adaq8092_get_alt_pol_en(struct adaq8092_dev *dev)
 {
-	struct adaq8092_state *st = adaq8092_get_data(indio_dev);
-
 	return dev->alt_bit_pol_en;
 }
 
 int adaq8092_set_data_rand_en(struct adaq8092_dev *dev, enum adaq8092_data_rand	mode)
 {
-	struct adaq8092_state *st = adaq8092_get_data(indio_dev);
 	int ret;
 
 	ret = adaq8092_update_bits(dev->spi_desc, ADAQ8092_REG_DATA_FORMAT,
@@ -467,14 +437,11 @@ int adaq8092_set_data_rand_en(struct adaq8092_dev *dev, enum adaq8092_data_rand	
 
 int adaq8092_get_data_rand_en(struct adaq8092_dev *dev)
 {
-	struct adaq8092_state *st = adaq8092_get_data(indio_dev);
-
 	return dev->data_rand_en;
 }
 
 int adaq8092_set_twos_comp(struct adaq8092_dev *dev, enum adaq8092_twoscomp mode)
 {
-	struct adaq8092_state *st = adaq8092_get_data(indio_dev);
 	int ret;
 
 	ret = adaq8092_update_bits(dev->spi_desc, ADAQ8092_REG_DATA_FORMAT,
@@ -490,7 +457,5 @@ int adaq8092_set_twos_comp(struct adaq8092_dev *dev, enum adaq8092_twoscomp mode
 
 int adaq8092_get_twos_comp(struct adaq8092_dev *dev)
 {
-	struct adaq8092_state *st = adaq8092_get_data(indio_dev);
-
 	return dev->twos_comp;
 }
