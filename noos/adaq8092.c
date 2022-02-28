@@ -50,6 +50,14 @@
 /******************************************************************************/
 /******************************************************************************/
 
+
+/**
+ * @brief Initialize the device.
+ * @param device - The device structure.
+ * @param init_param - The structure that contains the device initial
+ * 		       parameters.
+ * @return 0 in case of success, negative error code otherwise.
+ */
 int adaq8092_init(struct adaq8092_dev **device, struct adaq8092_init_param init_param)
 {
 	struct adaq8092_dev *dev;
@@ -190,6 +198,11 @@ error_dev:
 	return ret;
 }
 
+/**
+ * @brief Remove the device and release resources.
+ * @param device - The device structure.
+ * @return 0 in case of success, negative error code otherwise.
+ */
 int adaq8092_remove(struct adaq8092_dev *dev)
 {
 	int ret;
@@ -219,6 +232,12 @@ int adaq8092_remove(struct adaq8092_dev *dev)
 	return ret;
 }
 
+/**
+ * @brief Set the device powerodown mode.
+ * @param device - The device structure.
+ * @param mode - The device mode.
+ * @return SUCCESS in case of success, negative error code otherwise.
+ */
 int adaq8092_set_pd_mode(struct adaq8092_dev *dev, enum adaq8092_powerdown_modes mode)
 {
 	int ret;
@@ -234,11 +253,23 @@ int adaq8092_set_pd_mode(struct adaq8092_dev *dev, enum adaq8092_powerdown_modes
 	return 0;
 }
 
+/**
+ * @brief Get the device powerdown mode.
+ * @param device - The device structure.
+ * @param mode - The device mode.
+ * @return SUCCESS in case of success, negative error code otherwise.
+ */
 int adaq8092_get_pd_mode(struct adaq8092_dev *dev)
 {
 	return dev->pd_mode;
 }
 
+/**
+ * @brief Set the clock polarity mode.
+ * @param device - The device structure.
+ * @param mode - The device mode.
+ * @return SUCCESS in case of success, negative error code otherwise.
+ */
 int adaq8092_set_clk_pol_mode(struct adaq8092_dev *dev, enum adaq8092_clk_invert mode)
 {
 	int ret;
@@ -254,11 +285,23 @@ int adaq8092_set_clk_pol_mode(struct adaq8092_dev *dev, enum adaq8092_clk_invert
 	return 0;
 }
 
+/**
+ * @brief Get the clock polarity mode.
+ * @param device - The device structure.
+ * @param mode - The device mode.
+ * @return SUCCESS in case of success, negative error code otherwise.
+ */
 int adaq8092_get_clk_pol_mode(struct adaq8092_dev *dev)
 {
 	return dev->clk_pol_mode;
 }
 
+/**
+ * @brief Set the clock phase delay mode.
+ * @param device - The device structure.
+ * @param mode - The device mode.
+ * @return SUCCESS in case of success, negative error code otherwise.
+ */
 int adaq8092_set_clk_phase_mode(struct adaq8092_dev *dev, enum adaq8092_clk_phase_delay mode)
 {
 	int ret;
@@ -274,11 +317,23 @@ int adaq8092_set_clk_phase_mode(struct adaq8092_dev *dev, enum adaq8092_clk_phas
 	return 0;
 }
 
+/**
+ * @brief Get the clock phase delay mode.
+ * @param device - The device structure.
+ * @param mode - The device mode.
+ * @return SUCCESS in case of success, negative error code otherwise.
+ */
 int adaq8092_get_clk_phase_mode(struct adaq8092_dev *dev)
 {
 	return dev->clk_phase_mode;
 }
 
+/**
+ * @brief Set the clock duty cycle stabilizer mode.
+ * @param device - The device structure.
+ * @param mode - The device mode.
+ * @return SUCCESS in case of success, negative error code otherwise.
+ */
 int adaq8092_set_clk_dc_mode(struct adaq8092_dev *dev, enum adaq8092_clk_dutycycle mode)
 {
 	int ret;
@@ -294,11 +349,23 @@ int adaq8092_set_clk_dc_mode(struct adaq8092_dev *dev, enum adaq8092_clk_dutycyc
 	return 0;
 }
 
+/**
+ * @brief Get the clock duty cycle stabilizer mode.
+ * @param device - The device structure.
+ * @param mode - The device mode.
+ * @return SUCCESS in case of success, negative error code otherwise.
+ */
 int adaq8092_get_clk_dc_mode(struct adaq8092_dev *dev)
 {
 	return dev->clk_dc_mode;
 }
 
+/**
+ * @brief Set the LVDS output current mode.
+ * @param device - The device structure.
+ * @param mode - The device mode.
+ * @return SUCCESS in case of success, negative error code otherwise.
+ */
 int adaq8092_set_lvds_cur_mode(struct adaq8092_dev *dev, enum adaq8092_lvds_out_current mode)
 {
 	int ret;
@@ -314,11 +381,23 @@ int adaq8092_set_lvds_cur_mode(struct adaq8092_dev *dev, enum adaq8092_lvds_out_
 	return 0;
 }
 
+/**
+ * @brief Get the LVDS output current mode.
+ * @param device - The device structure.
+ * @param mode - The device mode.
+ * @return SUCCESS in case of success, negative error code otherwise.
+ */
 int adaq8092_get_lvds_cur_mode(struct adaq8092_dev *dev)
 {
 	return dev->lvds_cur_mode;
 }
 
+/**
+ * @brief Set the LVDS internal temination mode.
+ * @param device - The device structure.
+ * @param mode - The device mode.
+ * @return SUCCESS in case of success, negative error code otherwise.
+ */
 int adaq8092_set_lvds_term_mode(struct adaq8092_dev *dev, enum adaq8092_internal_term mode)
 {
 	int ret;
@@ -334,11 +413,23 @@ int adaq8092_set_lvds_term_mode(struct adaq8092_dev *dev, enum adaq8092_internal
 	return 0;
 }
 
+/**
+ * @brief Get the LVDS internal temination device mode.
+ * @param device - The device structure.
+ * @param mode - The device mode.
+ * @return SUCCESS in case of success, negative error code otherwise.
+ */
 int adaq8092_get_lvds_term_mode(struct adaq8092_dev *dev)
 {
 	return dev->lvds_term_mode;
 }
 
+/**
+ * @brief Set digital outputs.
+ * @param device - The device structure.
+ * @param mode - The device mode.
+ * @return SUCCESS in case of success, negative error code otherwise.
+ */
 int adaq8092_set_dout_en(struct adaq8092_dev *dev, enum adaq8092_dout_enable mode)
 {
 	int ret;
@@ -354,11 +445,23 @@ int adaq8092_set_dout_en(struct adaq8092_dev *dev, enum adaq8092_dout_enable mod
 	return 0;
 }
 
+/**
+ * @brief Get digital outputs.
+ * @param device - The device structure.
+ * @param mode - The device mode.
+ * @return SUCCESS in case of success, negative error code otherwise.
+ */
 int adaq8092_get_dout_en(struct adaq8092_dev *dev)
 {
 	return dev->dout_en;
 }
 
+/**
+ * @brief Set the digital output mode.
+ * @param device - The device structure.
+ * @param mode - The device mode.
+ * @return SUCCESS in case of success, negative error code otherwise.
+ */
 int adaq8092_set_dout_mode(struct adaq8092_dev *dev, enum adaq8092_dout_modes mode)
 {
 	int ret;
@@ -374,11 +477,23 @@ int adaq8092_set_dout_mode(struct adaq8092_dev *dev, enum adaq8092_dout_modes mo
 	return 0;
 }
 
+/**
+ * @brief Get the digital output mode.
+ * @param device - The device structure.
+ * @param mode - The device mode.
+ * @return SUCCESS in case of success, negative error code otherwise.
+ */
 int adaq8092_get_dout_mode(struct adaq8092_dev *dev)
 {
 	return dev->dout_mode;
 }
 
+/**
+ * @brief Set digital output test pattern mode.
+ * @param device - The device structure.
+ * @param mode - The device mode.
+ * @return SUCCESS in case of success, negative error code otherwise.
+ */
 int adaq8092_set_test_mode(struct adaq8092_dev *dev, enum adaq8092_out_test_modes mode)
 {
 	int ret;
@@ -394,12 +509,23 @@ int adaq8092_set_test_mode(struct adaq8092_dev *dev, enum adaq8092_out_test_mode
 	return 0;
 }
 
+/**
+ * @brief Get digital output test pattern mode.
+ * @param device - The device structure.
+ * @param mode - The device mode.
+ * @return SUCCESS in case of success, negative error code otherwise.
+ */
 int adaq8092_get_test_mode(struct adaq8092_dev *dev)
 {
-
 	return dev->test_mode;
 }
 
+/**
+ * @brief Set the alternate bit polarity mode.
+ * @param device - The device structure.
+ * @param mode - The device mode.
+ * @return SUCCESS in case of success, negative error code otherwise.
+ */
 int adaq8092_set_alt_pol_en(struct adaq8092_dev *dev, enum adaq8092_alt_bit_pol mode)
 {
 	int ret;
@@ -415,11 +541,23 @@ int adaq8092_set_alt_pol_en(struct adaq8092_dev *dev, enum adaq8092_alt_bit_pol 
 	return 0;
 }
 
+/**
+ * @brief Get the alternate bit polarity mode.
+ * @param device - The device structure.
+ * @param mode - The device mode.
+ * @return SUCCESS in case of success, negative error code otherwise.
+ */
 int adaq8092_get_alt_pol_en(struct adaq8092_dev *dev)
 {
 	return dev->alt_bit_pol_en;
 }
 
+/**
+ * @brief Set the data output randomizer mode.
+ * @param device - The device structure.
+ * @param mode - The device mode.
+ * @return SUCCESS in case of success, negative error code otherwise.
+ */
 int adaq8092_set_data_rand_en(struct adaq8092_dev *dev, enum adaq8092_data_rand	mode)
 {
 	int ret;
@@ -435,11 +573,23 @@ int adaq8092_set_data_rand_en(struct adaq8092_dev *dev, enum adaq8092_data_rand	
 	return 0;
 }
 
+/**
+ * @brief Get the data output randomizer mode.
+ * @param device - The device structure.
+ * @param mode - The device mode.
+ * @return SUCCESS in case of success, negative error code otherwise.
+ */
 int adaq8092_get_data_rand_en(struct adaq8092_dev *dev)
 {
 	return dev->data_rand_en;
 }
 
+/**
+ * @brief Set the Tows Complement mode.
+ * @param device - The device structure.
+ * @param mode - The device mode.
+ * @return SUCCESS in case of success, negative error code otherwise.
+ */
 int adaq8092_set_twos_comp(struct adaq8092_dev *dev, enum adaq8092_twoscomp mode)
 {
 	int ret;
@@ -455,6 +605,12 @@ int adaq8092_set_twos_comp(struct adaq8092_dev *dev, enum adaq8092_twoscomp mode
 	return 0;
 }
 
+/**
+ * @brief Get the Tows Complement mode.
+ * @param device - The device structure.
+ * @param mode - The device mode.
+ * @return SUCCESS in case of success, negative error code otherwise.
+ */
 int adaq8092_get_twos_comp(struct adaq8092_dev *dev)
 {
 	return dev->twos_comp;
