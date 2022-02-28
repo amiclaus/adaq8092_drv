@@ -99,7 +99,7 @@ int adaq8092_write(struct adaq8092_dev *dev, uint8_t reg_addr, uint8_t reg_data)
  * @param reg_data - The data to be written.
  * @return 0 in case of success, negative error code otherwise.
  */
-int adpd410x_update_bits(struct adpd410x_dev *dev, uint8_t reg_addr,
+int adaq8092_update_bits(struct adpd410x_dev *dev, uint8_t reg_addr,
 				uint8_t mask, uint8_t reg_data)
 {
 	int ret;
