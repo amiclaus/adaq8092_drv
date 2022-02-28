@@ -172,7 +172,6 @@ enum adaq8092_twoscomp {
 	ADAQ8092_TWOS_COMPLEMENT
 };
 
-
 /**
  * @struct adaq8092_init
  * @brief ADAQ8092 Device structure.
@@ -227,6 +226,12 @@ struct adaq8092_dev {
 /************************ Functions Declarations ******************************/
 /******************************************************************************/
 
+int adaq8092_read(struct adaq8092_dev *dev, uint8_t reg_addr, uint8_t *reg_data);
+
+int adaq8092_write(struct adaq8092_dev *dev, uint8_t reg_addr, uint8_t reg_data);
+
+int adpd410x_update_bits(struct adpd410x_dev *dev, uint8_t reg_addr,
+			 uint8_t mask, uint8_t reg_data);
 int adaq8092_init(struct adaq8092_dev **device, struct adaq8092_init_param init_param);
 
 int adaq8092_remove(struct adaq8092_dev *dev);

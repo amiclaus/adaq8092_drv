@@ -50,6 +50,70 @@
 /******************************************************************************/
 /******************************************************************************/
 
+/**
+ * @brief Read device register.
+ * @param dev - The device structure.
+ * @param reg_addr - The register address.
+ * @param reg_data - The data read from the register.
+ * @return 0 in case of success, negative error code otherwise.
+ */
+int adaq8092_read(struct adaq8092_dev *dev, uint8_t reg_addr, uint8_t *reg_data)
+{
+	int ret;
+	uint8_t buff[2] = {0};
+
+	buff[0] = ADAQ8092_SPI_READ | reg_addr;
+
+	ret = spi_write_and_read(dev->spi_desc, buff, 2);
+	if (ret)
+		return ret;
+
+	*reg_data = buff[1];
+
+	return 0;
+}
+
+/**
+ * @brief Write device register.
+ * @param dev- The device structure.
+ * @param reg_addr - The register address.
+ * @param reg_data - The data to be written.
+ * @return 0 in case of success, negative error code otherwise.
+ */
+int adaq8092_write(struct adaq8092_dev *dev, uint8_t reg_addr, uint8_t reg_data)
+{
+	int ret;
+	uint8_t buff[2] = {0};
+
+	buff[0] = reg_addr;
+	buff[1] = reg_data;
+
+	return spi_write_and_read(dev->spi_desc, buff, 2);
+}
+
+/**
+ * @brief Update specific register bits.
+ * @param dev - The device structure.
+ * @param reg_addr - The register address.
+ * @param mask - Specific bits mask.
+ * @param reg_data - The data to be written.
+ * @return 0 in case of success, negative error code otherwise.
+ */
+int adpd410x_update_bits(struct adpd410x_dev *dev, uint8_t reg_addr,
+				uint8_t mask, uint8_t reg_data)
+{
+	int ret;
+	uint8_t data;
+
+	ret = adaq8092_read(dev, reg_addr, &data);
+	if (ret)
+		return ret;
+
+	data &= ~mask;
+	data |= reg_data;
+
+	return adaq8092_write(dev, reg_addr, data);
+}
 
 /**
  * @brief Initialize the device.
