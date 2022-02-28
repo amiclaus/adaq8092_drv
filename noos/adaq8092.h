@@ -51,8 +51,7 @@
 /********************** Macros and Constants Definitions **********************/
 /******************************************************************************/
 /* SPI commands */
-#define ADAQ8092_SPI_READ          	0x01
-#define ADAQ8092_SPI_WRITE         	0x00
+#define ADAQ8092_SPI_READ          	BIT(7)
 #define ADAQ8092_ADDR(x)		((x) & 0xFF)
 
 /* ADAQ8092 Register Map */
