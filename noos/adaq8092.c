@@ -43,6 +43,7 @@
 #include <stdlib.h>
 #include <errno.h>
 #include "adaq8092.h"
+#include "delay.h"
 
 /******************************************************************************/
 /************************ Functions Definitions *******************************/
@@ -58,12 +59,12 @@ int adaq8092_init(struct adaq8092_dev **device, struct adaq8092_init_param init_
 	if (!dev)
 		return -ENOMEM;
 
-	/* SPI */
+	/* SPI Initialization*/
 	ret = spi_init(&dev->spi_desc, init_param.spi_init));
 	if (ret)
 		goto error_dev;
 
-	/* GPIO */
+	/* GPIO Initialization */
 	ret = gpio_get(&dev->gpio_adc_pd1, init_param.gpio_adc_pd1);
 	if (ret)
 		goto error_spi;
@@ -80,23 +81,101 @@ int adaq8092_init(struct adaq8092_dev **device, struct adaq8092_init_param init_
 	if (ret)
 		goto error_en_1p8;
 
-	dev->pd_mode = init_param.pd_mode;
-	dev->clk_pol_mode = init_param.clk_pol_mode;
-	dev->clk_phase_mode = init_param.clk_phase_mode;
-	dev->clk_dc_mode = init_param.clk_dc_mode;
-	dev->lvds_cur_mode = init_param.lvds_cur_mode;
-	dev->lvds_term_mode = init_param.lvds_term_mode;
-	dev->dout_en = init_param.dout_en;
-	dev->dout_mode = init_param.dout_mode;
-	dev->test_mode = init_param.test_mode;
-	dev->alt_bit_pol_en = init_param.alt_bit_pol_en;
-	dev->data_rand_en = init_param.data_rand_en;
-	dev->twos_comp = init_param.twos_comp;
+	/* Powerup Sequence */
+	ret = gpio_direction_output(dev->gpio_adc_pd1, GPIO_LOW);
+	if (ret)
+		goto error_par_ser;
+
+	ret = gpio_direction_output(dev->gpio_adc_pd2, GPIO_LOW);
+	if (ret)
+		goto error_par_ser;
+
+	ret = gpio_direction_output(dev->gpio_en_1p8, GPIO_LOW);
+	if (ret)
+		goto error_par_ser;
+
+	ret = gpio_direction_output(dev->gpio_par_ser, GPIO_LOW);
+	if (ret)
+		goto error_par_ser;
+
+	mdelay(1000);
+
+	ret = gpio_set_value(dev->gpio_en_1p8, GPIO_HIGH);
+	if (ret)
+		goto error_par_ser;
+
+	mdelay(1000);
+
+	ret = gpio_set_value(dev->gpio_adc_pd1, GPIO_HIGH);
+	if (ret)
+		goto error_par_ser;
+
+	ret = gpio_set_value(dev->gpio_adc_pd2, GPIO_HIGH);
+	if (ret)
+		goto error_par_ser;
+
+	/* Software Reset */
+	ret = adaq8092_write(dev,  ADAQ8092_REG_RESET, field_prep(ADAQ8092_RESET, 1));
+	if (ret)
+		goto error_par_ser;
+
+	mdelay(100);
+
+	/* Device Initialization */
+	ret = adaq8092_set_pd_mode(dev, init_param.pd_mode);
+	if (ret)
+		goto error_par_ser;
+
+	ret = adaq8092_set_clk_pol_mode(dev, init_param.clk_pol_mode);
+	if (ret)
+		goto error_par_ser;
+
+	ret = adaq8092_set_clk_phase_mode(dev, init_param.clk_phase_mode);
+	if (ret)
+		goto error_par_ser;
+
+	ret = adaq8092_set_clk_dc_mode(dev, init_param.clk_dc_mode);
+	if (ret)
+		goto error_par_ser;
+
+	ret = adaq8092_set_lvds_cur_mode(dev, init_param.lvds_cur_mode);
+	if (ret)
+		goto error_par_ser;
+
+	ret = adaq8092_set_lvds_term_mode(dev, init_param.lvds_term_mode);
+	if (ret)
+		goto error_par_ser;
+
+	ret = adaq8092_set_dout_en(dev, init_param.dout_en);
+	if (ret)
+		goto error_par_ser;
+
+	ret = adaq8092_set_dout_mode(dev, init_param.dout_mode);
+	if (ret)
+		goto error_par_ser;
+
+	ret = adaq8092_set_test_mode(dev, init_param.test_mode);
+	if (ret)
+		goto error_par_ser;
+
+	ret = adaq8092_set_alt_pol_en(dev, init_param.alt_bit_pol_en);
+	if (ret)
+		goto error_par_ser;
+
+	ret = adaq8092_set_data_rand_en(dev, init_param.data_rand_en);
+	if (ret)
+		goto error_par_ser;
+
+	ret = adaq8092_set_twos_comp(dev, init_param.twos_comp);
+	if (ret)
+		goto error_par_ser;
 
 	*device = dev;
 
-	return ret;
+	return 0;
 
+error_par_ser:
+	gpio_remove(dev->gpio_par_ser);
 error_adc_en_1p8:
 	gpio_remove(dev->gpio_en_1p8);
 error_adc_pd2:
@@ -107,6 +186,8 @@ error_spi:
 	spi_remove(dev->spi_desc);
 error_dev:
 	free(dev);
+
+	return ret;
 }
 
 int adaq8092_remove(struct adaq8092_dev *dev)
