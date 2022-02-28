@@ -107,7 +107,35 @@ error_spi:
 	spi_remove(dev->spi_desc);
 error_dev:
 	free(dev);
+}
 
+int adaq8092_remove(struct adaq8092_dev *dev)
+{
+	int ret;
+
+	ret = spi_remove(dev->spi_desc);
+	if (ret)
+		return ret;
+
+	ret = gpio_remove(dev->gpio_adc_pd1);
+	if (ret)
+		return ret;
+
+	ret = gpio_remove(dev->gpio_adc_pd2);
+	if (ret)
+		return ret;
+
+	ret = gpio_remove(dev->gpio_en_1p8);
+	if (ret)
+		return ret;
+
+	ret = gpio_remove(dev->gpio_par_ser);
+	if (ret)
+		return ret;
+
+	free(dev);
+
+	return ret;
 }
 
 int adaq8092_set_pd_mode(struct adaq8092_dev *dev, enum adaq8092_powerdown_modes mode)
