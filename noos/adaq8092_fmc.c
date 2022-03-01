@@ -177,7 +177,12 @@ int main(void)
 
 	pr_info("Start Caputre with Test pattern - Checkerboard \n");
 
-	axi_dmac_transfer(adaq8092_dmac, (uintptr_t)adc_buffer, sizeof(adc_buffer));
+	ret = axi_dmac_transfer(adaq8092_dmac, (uintptr_t)adc_buffer,
+				sizeof(adc_buffer));
+	if (ret) {
+		pr_err("axi_dmac_transfer() failed!\n");
+		return ret;
+	}
 
 	for (int i = 0; i < ADAQ8092_SAMPLES_PER_CH; i+=2)
 		pr_info("CH1: %d CH2: %d \n",adc_buffer[i], adc_buffer[i+1]);
