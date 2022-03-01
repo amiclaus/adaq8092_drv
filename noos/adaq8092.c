@@ -141,7 +141,7 @@ int adaq8092_init(struct adaq8092_dev **device,
 	if (ret)
 		goto error_spi;
 
-	ret = gpio_get(&dev->gpio_adc_pd2, init_param.gpio_adc_pd1_param);
+	ret = gpio_get(&dev->gpio_adc_pd2, init_param.gpio_adc_pd2_param);
 	if (ret)
 		goto error_adc_pd1;
 
