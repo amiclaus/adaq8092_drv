@@ -176,11 +176,13 @@ int adaq8092_init(struct adaq8092_dev **device,
 	if (ret)
 		goto error_par_ser;
 
-	mdelay(1000);
+	mdelay(500);
 
 	ret = gpio_set_value(dev->gpio_adc_pd1, GPIO_HIGH);
 	if (ret)
 		goto error_par_ser;
+
+	mdelay(1);
 
 	ret = gpio_set_value(dev->gpio_adc_pd2, GPIO_HIGH);
 	if (ret)
