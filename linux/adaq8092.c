@@ -759,9 +759,12 @@ static void adaq8092_powerup(struct adaq8092_state *st)
 
 	gpiod_set_value(st->gpio_en_1p8, 1);
 
-	msleep(1000);
+	msleep(500);
 
 	gpiod_set_value(st->gpio_adc_pd1, 1);
+
+	usleep_range(1000, 1500);
+
 	gpiod_set_value(st->gpio_adc_pd2, 1);
 }
 
