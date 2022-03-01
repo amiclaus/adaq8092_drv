@@ -175,7 +175,7 @@ int main(void)
 		return ret;
 	}
 
-	printf("Test pattern Checkerboard \n");
+	pr_info("Start Caputre with Test pattern - Checkerboard \n");
 
 	axi_dmac_transfer(adaq8092_dmac, (uintptr_t)adc_buffer, sizeof(adc_buffer));
 
