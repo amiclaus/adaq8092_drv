@@ -150,12 +150,18 @@ int main(void)
 		.lvds_term_mode = ADAQ8092_TERM_OFF,
 		.dout_en = ADAQ8092_DOUT_ON,
 		.dout_mode = ADAQ8092_DOUBLE_RATE_LVDS,
-		.test_mode = ADAQ8092_TEST_OFF,
+		.test_mode = ADAQ8092_TEST_CHECKERBOARD,
 		.alt_bit_pol_en = ADAQ8092_ALT_BIT_POL_OFF,
 		.data_rand_en = ADAQ8092_DATA_RAND_OFF,
 		.twos_comp = ADAQ8092_TWOS_COMPLEMENT
 	};
 	struct adaq8092_dev *adaq8092_device;
+
+	ret = adaq8092_init(&adaq8092_device, adaq8092_init_param);
+	if (ret) {
+		pr_err("ADAQ8092 device initialization failed!");
+		return ret;
+	}
 
 	ret = axi_adc_init(&adaq8092_core,  &adaq8092_core_param);
 	if (ret) {
@@ -169,16 +175,6 @@ int main(void)
 		return ret;
 	}
 
-	ret = adaq8092_init(&adaq8092_device, adaq8092_init_param);
-	if (ret) {
-		pr_err("ADAQ8092 device initialization failed!");
-		return ret;
-	}
-
-	ret = adaq8092_set_test_mode(adaq8092_device, ADAQ8092_TEST_CHECKERBOARD);
-	if (ret)
-		return ret;
-
 	printf("Test pattern Checkerboard \n");
 
 	axi_dmac_transfer(adaq8092_dmac, (uintptr_t)adc_buffer, sizeof(adc_buffer));
@@ -186,10 +182,13 @@ int main(void)
 	for (int i = 0; i < ADAQ8092_SAMPLES_PER_CH; i+=2)
 		pr_info("CH1: %d CH2: %d \n",adc_buffer[i], adc_buffer[i+1]);
 
+	ret = adaq8092_set_test_mode(adaq8092_device, ADAQ8092_TEST_OFF);
+	if (ret)
+		return ret;
+
 	pr_info("\n Capture done.\n");
 
 #ifdef IIO_SUPPORT
-
 	struct iio_axi_adc_desc *iio_axi_adc_desc;
 	struct iio_device *dev_desc;
 	struct iio_axi_adc_init_param iio_axi_adc_init_par;
