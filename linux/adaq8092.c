@@ -833,6 +833,13 @@ static int adaq8092_init(struct adaq8092_state *st)
 	if (ret)
 		return ret;
 
+	st->clk_pol_mode = ADAQ8092_CLK_POL_INVERTED;
+
+	ret = regmap_update_bits(st->regmap, ADAQ8092_REG_TIMING, ADAQ8092_CLK_INVERT,
+				 FIELD_PREP(ADAQ8092_CLK_INVERT, st->clk_pol_mode));
+	if (ret)
+		return ret;
+
 	st->twos_comp = ADAQ8092_TWOS_COMPLEMENT;
 
 	return regmap_update_bits(st->regmap, ADAQ8092_REG_DATA_FORMAT, ADAQ8092_TWOSCOMP,
