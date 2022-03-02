@@ -765,7 +765,7 @@ static int adaq8092_properties_parse(struct adaq8092_state *st)
 				     "failed to get the 1p8 GPIO\n");
 
 	st->gpio_par_ser = devm_gpiod_get(&st->spi->dev, "par-ser",
-					  GPIOD_OUT_HIGH);
+					  GPIOD_IN);
 	if (IS_ERR(st->gpio_par_ser))
 		return dev_err_probe(&spi->dev, PTR_ERR(st->gpio_par_ser),
 				     "failed to get the Par/Ser GPIO\n");
@@ -778,9 +778,15 @@ static int adaq8092_properties_parse(struct adaq8092_state *st)
 	return 0;
 }
 
-static void adaq8092_powerup(struct adaq8092_state *st)
+static int adaq8092_powerup(struct adaq8092_state *st)
 {
-	gpiod_set_value(st->gpio_par_ser, 0);
+	struct spi_device *spi = st->spi;
+
+	if (gpiod_get_value(st->gpio_par_ser)) {
+		dev_err(&spi->dev, "PAR/SER Pin not configured properly!\n");
+		return -EINVAL;
+	}
+
 	gpiod_set_value(st->gpio_adc_pd1, 0);
 	gpiod_set_value(st->gpio_adc_pd2, 0);
 	gpiod_set_value(st->gpio_en_1p8, 0);
@@ -796,6 +802,8 @@ static void adaq8092_powerup(struct adaq8092_state *st)
 	usleep_range(1000, 1500);
 
 	gpiod_set_value(st->gpio_adc_pd2, 1);
+
+	return 0;
 }
 
 static void adaq8092_clk_disable(void *data)
@@ -849,7 +857,9 @@ static int adaq8092_init(struct adaq8092_state *st)
 	/* Without this, the axi_adc won't find the converter data */
 	spi_set_drvdata(st->spi, conv);
 
-	adaq8092_powerup(st);
+	ret = adaq8092_powerup(st);
+	if (ret)
+		return ret;
 
 	ret = regmap_write(st->regmap, ADAQ8092_REG_RESET,
 			   FIELD_PREP(ADAQ8092_RESET, 1));
