@@ -782,11 +782,6 @@ static int adaq8092_powerup(struct adaq8092_state *st)
 {
 	struct spi_device *spi = st->spi;
 
-	if (gpiod_get_value(st->gpio_par_ser)) {
-		dev_err(&spi->dev, "PAR/SER Pin not configured properly!\n");
-		return -EINVAL;
-	}
-
 	gpiod_set_value(st->gpio_adc_pd1, 0);
 	gpiod_set_value(st->gpio_adc_pd2, 0);
 	gpiod_set_value(st->gpio_en_1p8, 0);
@@ -802,6 +797,11 @@ static int adaq8092_powerup(struct adaq8092_state *st)
 	usleep_range(1000, 1500);
 
 	gpiod_set_value(st->gpio_adc_pd2, 1);
+
+	if (gpiod_get_value(st->gpio_par_ser)) {
+		dev_err(&spi->dev, "PAR/SER Pin not configured properly!\n");
+		return -EINVAL;
+	}
 
 	return 0;
 }
