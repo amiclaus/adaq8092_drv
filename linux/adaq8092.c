@@ -532,7 +532,22 @@ static int adaq8092_set_data_rand_en(struct iio_dev *indio_dev,
 				     unsigned int mode)
 {
 	struct adaq8092_state *st = adaq8092_get_data(indio_dev);
-	int ret;
+	struct axiadc_state *axi_adc_st = iio_priv(indio_dev);
+	struct axiadc_converter *conv = iio_device_get_drvdata(indio_dev);
+	unsigned int data, axi_data_rand_en;
+	int ret, i;
+
+	if (mode == ADAQ8092_DATA_RAND_ON)
+		axi_data_rand_en = BIT(13);
+	else
+		axi_data_rand_en = 0;
+
+	for (i = 0; i < conv->chip_info->num_channels; i++) {
+		data = axiadc_read(axi_adc_st, ADI_REG_CHAN_CNTRL(i));
+		data &= ~BIT(13);
+		data |= axi_data_rand_en;
+		axiadc_write(axi_adc_st, ADI_REG_CHAN_CNTRL(i), data);
+	}
 
 	ret = regmap_update_bits(st->regmap, ADAQ8092_REG_DATA_FORMAT,
 				 ADAQ8092_RAND,
