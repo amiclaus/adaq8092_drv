@@ -146,6 +146,13 @@ enum adaq8092_par_ser {
 	ADAQ8092_PARALLEL
 };
 
+enum adaq8092_pd_gpio {
+	ADAQ8092_PD1_ON_PD2_ON,
+	ADAQ8092_PD1_OFF_PD2_ON,
+	ADAQ8092_PD1_ON_PD2_OFF,
+	ADAQ8092_PD1_OFF_PD2_OFF
+};
+
 struct adaq8092_state {
 	struct spi_device		*spi;
 	struct regmap			*regmap;
@@ -169,6 +176,7 @@ struct adaq8092_state {
 	enum adaq8092_data_rand		data_rand_en;
 	enum adaq8092_twoscomp		twos_comp;
 	enum adaq8092_par_ser		par_ser_mode;
+	enum adaq8092_pd_gpio		pd_gpio_mode;
 };
 
 static const char * const adaq8092_pd_modes[] = {
@@ -247,6 +255,13 @@ static const char * const adaq8092_twos_comp_mode[] = {
 static const char * const adaq8092_par_ser_mode[] = {
 	[ADAQ8092_SERIAL] = "serial_mode",
 	[ADAQ8092_PARALLEL] = "parallel_mode"
+};
+
+static const char * const adaq8092_pd_gpio_mode[] = {
+	[ADAQ8092_PD1_ON_PD2_ON] = "pd1_on_pd2_on",
+	[ADAQ8092_PD1_OFF_PD2_ON] = "pd1_off_pd2_on",
+	[ADAQ8092_PD1_ON_PD2_OFF] = "pd1_on_pd2_off",
+	[ADAQ8092_PD1_OFF_PD2_OFF] = "pd1_off_pd2_off",
 };
 
 static const struct regmap_config adaq8092_regmap_config = {
@@ -617,6 +632,46 @@ static int adaq8092_get_par_ser_mode(struct iio_dev *indio_dev,
 	return st->par_ser_mode;
 }
 
+static int adaq8092_set_pd_gpio_mode(struct iio_dev *indio_dev,
+				     const struct iio_chan_spec *chan,
+				     unsigned int mode)
+{
+	struct adaq8092_state *st = adaq8092_get_data(indio_dev);
+
+	switch (mode) {
+	case ADAQ8092_PD1_ON_PD2_ON:
+		gpiod_set_value(st->gpio_adc_pd1, 1);
+		gpiod_set_value(st->gpio_adc_pd2, 1);
+		break;
+	case ADAQ8092_PD1_OFF_PD2_ON:
+		gpiod_set_value(st->gpio_adc_pd1, 0);
+		gpiod_set_value(st->gpio_adc_pd2, 1);
+		break;
+	case ADAQ8092_PD1_ON_PD2_OFF:
+		gpiod_set_value(st->gpio_adc_pd1, 1);
+		gpiod_set_value(st->gpio_adc_pd2, 0);
+		break;
+	case ADAQ8092_PD1_OFF_PD2_OFF:
+		gpiod_set_value(st->gpio_adc_pd1, 0);
+		gpiod_set_value(st->gpio_adc_pd2, 0);
+		break;
+	default:
+		return -EINVAL;
+	}
+
+	st->pd_gpio_mode = mode;
+
+	return 0;
+}
+
+static int adaq8092_get_pd_gpio_mode(struct iio_dev *indio_dev,
+				     const struct iio_chan_spec *chan)
+{
+	struct adaq8092_state *st = adaq8092_get_data(indio_dev);
+
+	return st->pd_gpio_mode;
+}
+
 static int adaq8092_reg_access(struct iio_dev *indio_dev,
 			       unsigned int reg,
 			       unsigned int write_val,
@@ -720,6 +775,13 @@ static const struct iio_enum adaq8092_par_ser_gpio_enum = {
 	.get = adaq8092_get_par_ser_mode,
 };
 
+static const struct iio_enum adaq8092_pd_gpio_enum = {
+	.items = adaq8092_pd_gpio_mode,
+	.num_items = ARRAY_SIZE(adaq8092_pd_gpio_mode),
+	.get = adaq8092_get_pd_gpio_mode,
+	.set = adaq8092_set_pd_gpio_mode
+};
+
 static const struct iio_chan_spec_ext_info adaq8092_ext_info[] = {
 	IIO_ENUM("pd_mode", IIO_SHARED_BY_ALL, &adaq8092_pd_mode_enum),
 	IIO_ENUM_AVAILABLE_SHARED("pd_mode", IIO_SHARED_BY_ALL, &adaq8092_pd_mode_enum),
@@ -745,6 +807,8 @@ static const struct iio_chan_spec_ext_info adaq8092_ext_info[] = {
 	IIO_ENUM_AVAILABLE_SHARED("data_rand_en", IIO_SHARED_BY_ALL, &adaq8092_data_rand_en_enum),
 	IIO_ENUM("twos_complement", IIO_SHARED_BY_ALL, &adaq8092_twoscomp_enum),
 	IIO_ENUM_AVAILABLE_SHARED("twos_complement", IIO_SHARED_BY_ALL, &adaq8092_twoscomp_enum),
+	IIO_ENUM("pd_gpio", IIO_SHARED_BY_ALL, &adaq8092_pd_gpio_enum),
+	IIO_ENUM_AVAILABLE_SHARED("pd_gpio", IIO_SHARED_BY_ALL, &adaq8092_pd_gpio_enum),
 	IIO_ENUM("par_ser_gpio", IIO_SHARED_BY_ALL, &adaq8092_par_ser_gpio_enum),
 	{ },
 };
