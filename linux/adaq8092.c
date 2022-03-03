@@ -607,6 +607,16 @@ static int adaq8092_get_twos_comp(struct iio_dev *indio_dev,
 	return st->twos_comp;
 }
 
+static int adaq8092_get_par_ser_mode(struct iio_dev *indio_dev,
+				     const struct iio_chan_spec *chan)
+{
+	struct adaq8092_state *st = adaq8092_get_data(indio_dev);
+
+	st->par_ser_mode = gpiod_get_value(st->gpio_par_ser);
+
+	return st->par_ser_mode;
+}
+
 static int adaq8092_reg_access(struct iio_dev *indio_dev,
 			       unsigned int reg,
 			       unsigned int write_val,
@@ -618,16 +628,6 @@ static int adaq8092_reg_access(struct iio_dev *indio_dev,
 		return regmap_read(st->regmap, reg, read_val);
 	else
 		return regmap_write(st->regmap, reg, write_val);
-}
-
-static int adaq8092_get_par_ser_mode(struct iio_dev *indio_dev,
-				     const struct iio_chan_spec *chan)
-{
-	struct adaq8092_state *st = adaq8092_get_data(indio_dev);
-
-	st->par_ser_mode = gpiod_get_value(st->gpio_par_ser);
-
-	return st->par_ser_mode;
 }
 
 static const struct iio_enum adaq8092_pd_mode_enum = {
