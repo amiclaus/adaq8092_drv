@@ -766,7 +766,7 @@ static const struct iio_chan_spec_ext_info adaq8092_ext_info[] = {
 
 static const struct axiadc_chip_info conv_chip_info = {
 	.name = "adaq8092_axi_adc",
-	.max_rate = 105000000UL,
+	.max_rate = 80000000UL,
 	.num_channels = 2,
 	.channel[0] = ADAQ8092_CHAN(0),
 	.channel[1] = ADAQ8092_CHAN(1),
