@@ -134,6 +134,7 @@ enum adaq8092_data_rand {
 	ADAQ8092_DATA_RAND_ON
 };
 
+/* ADAQ8092 Twos Complement Mode */
 enum adaq8092_twoscomp {
 	ADAQ8092_OFFSET_BINARY,
 	ADAQ8092_TWOS_COMPLEMENT
