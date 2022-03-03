@@ -140,6 +140,12 @@ enum adaq8092_twoscomp {
 	ADAQ8092_TWOS_COMPLEMENT
 };
 
+/* ADAQ8092 Communication Mode */
+enum adaq8092_par_ser {
+	ADAQ8092_SERIAL,
+	ADAQ8092_PARALLEL
+};
+
 struct adaq8092_state {
 	struct spi_device		*spi;
 	struct regmap			*regmap;
@@ -162,6 +168,7 @@ struct adaq8092_state {
 	enum adaq8092_alt_bit_pol	alt_bit_pol_en;
 	enum adaq8092_data_rand		data_rand_en;
 	enum adaq8092_twoscomp		twos_comp;
+	enum adaq8092_par_ser		par_ser_mode;
 };
 
 static const char * const adaq8092_pd_modes[] = {
@@ -235,6 +242,11 @@ static const char * const adaq8092_data_rand_en[] = {
 static const char * const adaq8092_twos_comp_mode[] = {
 	[ADAQ8092_OFFSET_BINARY] = "offset_binary",
 	[ADAQ8092_TWOS_COMPLEMENT] = "twos_complement"
+};
+
+static const char * const adaq8092_par_ser_mode[] = {
+	[ADAQ8092_SERIAL] = "serial_mode",
+	[ADAQ8092_PARALLEL] = "parallel_mode"
 };
 
 static const struct regmap_config adaq8092_regmap_config = {
@@ -608,6 +620,16 @@ static int adaq8092_reg_access(struct iio_dev *indio_dev,
 		return regmap_write(st->regmap, reg, write_val);
 }
 
+static int adaq8092_get_par_ser_mode(struct iio_dev *indio_dev,
+				     const struct iio_chan_spec *chan)
+{
+	struct adaq8092_state *st = adaq8092_get_data(indio_dev);
+
+	st->par_ser_mode = gpiod_get_value(st->gpio_par_ser);
+
+	return st->par_ser_mode;
+}
+
 static const struct iio_enum adaq8092_pd_mode_enum = {
 	.items = adaq8092_pd_modes,
 	.num_items = ARRAY_SIZE(adaq8092_pd_modes),
@@ -692,6 +714,12 @@ static const struct iio_enum adaq8092_twoscomp_enum = {
 	.set = adaq8092_set_twos_comp,
 };
 
+static const struct iio_enum adaq8092_par_ser_gpio_enum = {
+	.items = adaq8092_par_ser_mode,
+	.num_items = ARRAY_SIZE(adaq8092_par_ser_mode),
+	.get = adaq8092_get_par_ser_mode,
+};
+
 static const struct iio_chan_spec_ext_info adaq8092_ext_info[] = {
 	IIO_ENUM("pd_mode", IIO_SHARED_BY_ALL, &adaq8092_pd_mode_enum),
 	IIO_ENUM_AVAILABLE_SHARED("pd_mode", IIO_SHARED_BY_ALL, &adaq8092_pd_mode_enum),
@@ -717,6 +745,7 @@ static const struct iio_chan_spec_ext_info adaq8092_ext_info[] = {
 	IIO_ENUM_AVAILABLE_SHARED("data_rand_en", IIO_SHARED_BY_ALL, &adaq8092_data_rand_en_enum),
 	IIO_ENUM("twos_complement", IIO_SHARED_BY_ALL, &adaq8092_twoscomp_enum),
 	IIO_ENUM_AVAILABLE_SHARED("twos_complement", IIO_SHARED_BY_ALL, &adaq8092_twoscomp_enum),
+	IIO_ENUM("par_ser_gpio", IIO_SHARED_BY_ALL, &adaq8092_par_ser_gpio_enum),
 	{ },
 };
 
