@@ -177,6 +177,7 @@ struct adaq8092_state {
 	enum adaq8092_twoscomp		twos_comp;
 	enum adaq8092_par_ser		par_ser_mode;
 	enum adaq8092_pd_gpio		pd_gpio_mode;
+	unsigned int			sampling_freq;
 };
 
 static const char * const adaq8092_pd_modes[] = {
@@ -816,6 +817,7 @@ static const struct iio_chan_spec_ext_info adaq8092_ext_info[] = {
 #define ADAQ8092_CHAN(_channel)						\
 	{								\
 		.type = IIO_VOLTAGE,					\
+		.info_mask_shared_by_all = BIT(IIO_CHAN_INFO_SAMP_FREQ),\
 		.address = _channel,					\
 		.indexed = 1,						\
 		.channel = _channel,					\
@@ -835,6 +837,36 @@ static const struct axiadc_chip_info conv_chip_info = {
 	.channel[0] = ADAQ8092_CHAN(0),
 	.channel[1] = ADAQ8092_CHAN(1),
 };
+
+static int adaq8092_read_raw(struct iio_dev *indio_dev,
+			     const struct iio_chan_spec *chan,
+			     int *val, int *val2, long info)
+{
+	struct adaq8092_state *st = adaq8092_get_data(indio_dev);
+
+	switch (info) {
+	case IIO_CHAN_INFO_SAMP_FREQ:
+		*val = st->sampling_freq;
+		return IIO_VAL_INT;
+	default:
+		return -EINVAL;
+	}
+}
+
+static int adaq8092_write_raw(struct iio_dev *indio_dev,
+			      struct iio_chan_spec const *chan,
+			      int val, int val2, long mask)
+{
+	struct adaq8092_state *st = adaq8092_get_data(indio_dev);
+
+	switch (mask) {
+	case IIO_CHAN_INFO_SAMP_FREQ:
+		st->sampling_freq = val;
+		return 0;
+	default:
+		return -EINVAL;
+	}
+}
 
 static int adaq8092_properties_parse(struct adaq8092_state *st)
 {
@@ -936,8 +968,12 @@ static int adaq8092_init(struct adaq8092_state *st)
 	conv->chip_info = &conv_chip_info;
 	conv->adc_output_mode = ADAQ8092_TWOS_COMPLEMENT;
 	conv->reg_access = &adaq8092_reg_access;
+	conv->read_raw = &adaq8092_read_raw;
+	conv->write_raw = &adaq8092_write_raw;
 	conv->post_setup = &adaq8092_post_setup;
 	conv->phy = st;
+
+	st->sampling_freq = 80000000;
 
 	/* Without this, the axi_adc won't find the converter data */
 	spi_set_drvdata(st->spi, conv);
