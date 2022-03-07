@@ -837,7 +837,7 @@ static const struct iio_chan_spec_ext_info adaq8092_ext_info[] = {
 
 static const struct axiadc_chip_info conv_chip_info = {
 	.name = "adaq8092_axi_adc",
-	.max_rate = 80000000UL,
+	.max_rate = 105000000UL,
 	.num_channels = 2,
 	.channel[0] = ADAQ8092_CHAN(0),
 	.channel[1] = ADAQ8092_CHAN(1),
@@ -978,7 +978,7 @@ static int adaq8092_init(struct adaq8092_state *st)
 	conv->post_setup = &adaq8092_post_setup;
 	conv->phy = st;
 
-	st->sampling_freq = 80000000;
+	st->sampling_freq = 105000000;
 
 	/* Without this, the axi_adc won't find the converter data */
 	spi_set_drvdata(st->spi, conv);
