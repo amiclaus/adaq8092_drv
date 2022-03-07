@@ -522,20 +522,28 @@ static int adaq8092_set_alt_pol_en(struct iio_dev *indio_dev,
 	struct adaq8092_state *st = adaq8092_get_data(indio_dev);
 	struct axiadc_state *axi_adc_st = iio_priv(indio_dev);
 	struct axiadc_converter *conv = iio_device_get_drvdata(indio_dev);
-	unsigned int data, axi_pol_en;
+	unsigned int data, axi_pol_en, axi_pol_en_ch;
 	int ret, i;
 
-	if (mode == ADAQ8092_ALT_BIT_POL_ON)
-		axi_pol_en = BIT(12) | ADI_FORMAT_TYPE;
-	else
+	if (mode == ADAQ8092_ALT_BIT_POL_ON) {
+		axi_pol_en_ch = ADI_FORMAT_TYPE;
+		axi_pol_en = BIT(1);
+	} else {
+		axi_pol_en_ch = 0;
 		axi_pol_en = 0;
+	}
 
 	for (i = 0; i < conv->chip_info->num_channels; i++) {
 		data = axiadc_read(axi_adc_st, ADI_REG_CHAN_CNTRL(i));
-		data &= ~(BIT(12) | ADI_FORMAT_TYPE);
-		data |= axi_pol_en;
+		data &= ~ADI_FORMAT_TYPE;
+		data |= axi_pol_en_ch;
 		axiadc_write(axi_adc_st, ADI_REG_CHAN_CNTRL(i), data);
 	}
+
+	data = axiadc_read(axi_adc_st, 0x4c);
+	data &= ~BIT(1);
+	data |= axi_pol_en;
+	axiadc_write(axi_adc_st, 0x4c, data);
 
 	ret = regmap_update_bits(st->regmap, ADAQ8092_REG_DATA_FORMAT,
 				 ADAQ8092_ABP,
