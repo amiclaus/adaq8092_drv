@@ -935,12 +935,23 @@ static void adaq8092_clk_disable(void *data)
 
 static int adaq8092_post_setup(struct iio_dev *indio_dev)
 {
-	struct axiadc_state *st = iio_priv(indio_dev);
+	struct axiadc_state *axi_adc_st = iio_priv(indio_dev);
 	struct axiadc_converter *conv = iio_device_get_drvdata(indio_dev);
-	int i;
+	struct adaq8092_state *st = adaq8092_get_data(indio_dev);
+	unsigned int data;
+	int i, ret;
+
+	data = axiadc_read(axi_adc_st, ADAQ8092_REG_OUTPUT_MODE);
+
+	st->dout_mode = ADAQ8092_DOUBLE_RATE_LVDS;
+
+	ret = regmap_update_bits(st->regmap, ADAQ8092_REG_OUTPUT_MODE, ADAQ8092_OUTMODE,
+				 FIELD_PREP(ADAQ8092_OUTMODE, st->dout_mode));
+	if (ret)
+		return ret;
 
 	for (i = 0; i < conv->chip_info->num_channels; i++)
-		axiadc_write(st, ADI_REG_CHAN_CNTRL(i), ADI_ENABLE | ADI_FORMAT_ENABLE
+		axiadc_write(axi_adc_st, ADI_REG_CHAN_CNTRL(i), ADI_ENABLE | ADI_FORMAT_ENABLE
 			     | ADI_FORMAT_SIGNEXT);
 
 	return 0;
@@ -993,13 +1004,6 @@ static int adaq8092_init(struct adaq8092_state *st)
 
 	ret = regmap_write(st->regmap, ADAQ8092_REG_RESET,
 			   FIELD_PREP(ADAQ8092_RESET, 1));
-	if (ret)
-		return ret;
-
-	st->dout_mode = ADAQ8092_DOUBLE_RATE_LVDS;
-
-	ret = regmap_update_bits(st->regmap, ADAQ8092_REG_OUTPUT_MODE, ADAQ8092_OUTMODE,
-				 FIELD_PREP(ADAQ8092_OUTMODE, st->dout_mode));
 	if (ret)
 		return ret;
 
