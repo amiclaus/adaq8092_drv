@@ -468,7 +468,25 @@ static int adaq8092_set_dout_mode(struct iio_dev *indio_dev,
 				  unsigned int mode)
 {
 	struct adaq8092_state *st = adaq8092_get_data(indio_dev);
+	struct axiadc_state *axi_adc_st = iio_priv(indio_dev);
+	unsigned int data, sdr_ddr_n;
 	int ret;
+
+	if (st->dout_mode != ADAQ8092_DOUBLE_RATE_LVDS && mode == ADAQ8092_DOUBLE_RATE_LVDS)
+		return -EINVAL;
+
+	if (st->dout_mode == ADAQ8092_DOUBLE_RATE_LVDS && mode != ADAQ8092_DOUBLE_RATE_LVDS)
+		return -EINVAL;
+
+	if (st->dout_mode == ADAQ8092_FULL_RATE_CMOS)
+		sdr_ddr_n = 1;
+	else
+		sdr_ddr_n = 0;
+
+	data = axiadc_read(axi_adc_st, ADI_REG_CNTRL);
+	data &= ~BIT(16);
+	data |= sdr_ddr_n;
+	axiadc_write(axi_adc_st, ADI_REG_CNTRL, data);
 
 	ret = regmap_update_bits(st->regmap, ADAQ8092_REG_OUTPUT_MODE,
 				 ADAQ8092_OUTMODE,
