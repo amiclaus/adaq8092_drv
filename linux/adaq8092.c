@@ -962,7 +962,7 @@ static int adaq8092_post_setup(struct iio_dev *indio_dev)
 	data = axiadc_read(axi_adc_st, ADI_REG_CONFIG);
 	data &= ADI_CMOS_OR_LVDS_N;
 
-	if(data)
+	if (data)
 		st->dout_mode = ADAQ8092_DOUBLE_RATE_CMOS;
 	else
 		st->dout_mode = ADAQ8092_DOUBLE_RATE_LVDS;
