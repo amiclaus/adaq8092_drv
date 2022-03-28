@@ -479,7 +479,7 @@ static int adaq8092_set_dout_mode(struct iio_dev *indio_dev,
 		return -EINVAL;
 
 	if (st->dout_mode == ADAQ8092_FULL_RATE_CMOS)
-		sdr_ddr_n = 1;
+		sdr_ddr_n = BIT(16);
 	else
 		sdr_ddr_n = 0;
 
