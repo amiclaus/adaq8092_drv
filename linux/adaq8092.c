@@ -478,7 +478,7 @@ static int adaq8092_set_dout_mode(struct iio_dev *indio_dev,
 	if (st->dout_mode == ADAQ8092_DOUBLE_RATE_LVDS && mode != ADAQ8092_DOUBLE_RATE_LVDS)
 		return -EINVAL;
 
-	switch (st->dout_mode) {
+	switch (mode) {
 	case ADAQ8092_FULL_RATE_CMOS:
 		sdr_ddr_n = BIT(16);
 
