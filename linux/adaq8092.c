@@ -478,10 +478,55 @@ static int adaq8092_set_dout_mode(struct iio_dev *indio_dev,
 	if (st->dout_mode == ADAQ8092_DOUBLE_RATE_LVDS && mode != ADAQ8092_DOUBLE_RATE_LVDS)
 		return -EINVAL;
 
-	if (st->dout_mode == ADAQ8092_FULL_RATE_CMOS)
+	switch (st->dout_mode) {
+	case ADAQ8092_FULL_RATE_CMOS:
 		sdr_ddr_n = BIT(16);
-	else
+
+		ret = regmap_write(st->regmap, ADAQ8092_REG_TIMING,
+				   FIELD_PREP(ADAQ8092_CLK_INVERT, ADAQ8092_CLK_POL_NORMAL) |
+				   FIELD_PREP(ADAQ8092_CLK_PHASE, ADAQ8092_NO_DELAY) |
+				   FIELD_PREP(ADAQ8092_CLK_DUTYCYCLE, ADAQ8092_CLK_DC_STABILIZER_OFF));
+		if (ret)
+			return ret;
+
+		st->clk_pol_mode = ADAQ8092_CLK_POL_NORMAL;
+		st->clk_phase_mode = ADAQ8092_NO_DELAY;
+		st->clk_dc_mode = ADAQ8092_CLK_DC_STABILIZER_OFF;
+
+		break;
+	case ADAQ8092_DOUBLE_RATE_CMOS:
 		sdr_ddr_n = 0;
+
+		ret = regmap_write(st->regmap, ADAQ8092_REG_TIMING,
+				   FIELD_PREP(ADAQ8092_CLK_INVERT, ADAQ8092_CLK_POL_INVERTED) |
+				   FIELD_PREP(ADAQ8092_CLK_PHASE, ADAQ8092_CLKOUT_DELAY_45DEG) |
+				   FIELD_PREP(ADAQ8092_CLK_DUTYCYCLE, ADAQ8092_CLK_DC_STABILIZER_ON));
+		if (ret)
+			return ret;
+
+		st->clk_pol_mode = ADAQ8092_CLK_POL_INVERTED;
+		st->clk_phase_mode = ADAQ8092_CLKOUT_DELAY_45DEG;
+		st->clk_dc_mode = ADAQ8092_CLK_DC_STABILIZER_ON;
+
+		break;
+	case ADAQ8092_DOUBLE_RATE_LVDS:
+		sdr_ddr_n = 0;
+
+		ret = regmap_write(st->regmap, ADAQ8092_REG_TIMING,
+				   FIELD_PREP(ADAQ8092_CLK_INVERT, ADAQ8092_CLK_POL_INVERTED) |
+				   FIELD_PREP(ADAQ8092_CLK_PHASE, ADAQ8092_NO_DELAY) |
+				   FIELD_PREP(ADAQ8092_CLK_DUTYCYCLE, ADAQ8092_CLK_DC_STABILIZER_OFF));
+		if (ret)
+			return ret;
+
+		st->clk_pol_mode = ADAQ8092_CLK_POL_INVERTED;
+		st->clk_phase_mode = ADAQ8092_NO_DELAY;
+		st->clk_dc_mode = ADAQ8092_CLK_DC_STABILIZER_OFF;
+
+		break;
+	default:
+		return -EINVAL;
+	}
 
 	data = axiadc_read(axi_adc_st, ADI_REG_CNTRL);
 	data &= ~BIT(16);
