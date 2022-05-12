@@ -900,7 +900,7 @@ static const struct iio_chan_spec_ext_info adaq8092_ext_info[] = {
 		.ext_info = adaq8092_ext_info,				\
 		.scan_type = {						\
 			.sign = 's',					\
-			.realbits = 16,					\
+			.realbits = 14,					\
 			.storagebits = 16,				\
 		},							\
 	}
