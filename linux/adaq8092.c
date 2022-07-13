@@ -1008,7 +1008,6 @@ static int adaq8092_post_setup(struct iio_dev *indio_dev)
 {
 	struct axiadc_state *axi_adc_st = iio_priv(indio_dev);
 	struct axiadc_converter *conv = iio_device_get_drvdata(indio_dev);
-	struct adaq8092_state *st = adaq8092_get_data(indio_dev);
 	enum adaq8092_dout_modes mode;
 	unsigned int data;
 	int i, ret;
