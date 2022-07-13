@@ -889,7 +889,7 @@ static const struct iio_chan_spec_ext_info adaq8092_ext_info[] = {
 	{ },
 };
 
-#define ADAQ8092_CHAN(_channel)						\
+#define ADAQ8092_CHAN(_channel, _name)						\
 	{								\
 		.type = IIO_VOLTAGE,					\
 		.info_mask_shared_by_all = BIT(IIO_CHAN_INFO_SAMP_FREQ),\
@@ -897,6 +897,7 @@ static const struct iio_chan_spec_ext_info adaq8092_ext_info[] = {
 		.indexed = 1,						\
 		.channel = _channel,					\
 		.scan_index = _channel,					\
+		.extend_name = _name#_channel,					\
 		.ext_info = adaq8092_ext_info,				\
 		.scan_type = {						\
 			.sign = 's',					\
@@ -909,8 +910,8 @@ static const struct axiadc_chip_info conv_chip_info = {
 	.name = "adaq8092_axi_adc",
 	.max_rate = 105000000UL,
 	.num_channels = 2,
-	.channel[0] = ADAQ8092_CHAN(0),
-	.channel[1] = ADAQ8092_CHAN(1),
+	.channel[0] = ADAQ8092_CHAN(0, "channel"),
+	.channel[1] = ADAQ8092_CHAN(1, "channel"),
 };
 
 static int adaq8092_read_raw(struct iio_dev *indio_dev,
@@ -1007,6 +1008,7 @@ static int adaq8092_post_setup(struct iio_dev *indio_dev)
 {
 	struct axiadc_state *axi_adc_st = iio_priv(indio_dev);
 	struct axiadc_converter *conv = iio_device_get_drvdata(indio_dev);
+	struct adaq8092_state *st = adaq8092_get_data(indio_dev);
 	enum adaq8092_dout_modes mode;
 	unsigned int data;
 	int i, ret;
