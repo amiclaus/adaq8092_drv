@@ -42,12 +42,13 @@ from adi.rx_tx import rx
 
 class adaq8092(rx, context_manager):
 
-    """ ADAQ8092 14-Bit, 105MSPS, Dual-Channel uModule Data Acquisition Solution  """
+    """ADAQ8092 14-Bit, 105MSPS, Dual-Channel uModule Data Acquisition Solution"""
 
     _device_name = "adaq8092"
 
     def __init__(
-        self, uri="",
+        self,
+        uri="",
     ):
         """Initialize."""
         context_manager.__init__(self, uri, self._device_name)
@@ -336,7 +337,7 @@ class adaq8092(rx, context_manager):
 
     @property
     def twos_complement_available(self):
-        """Get available Two's Complement Modes. """
+        """Get available Two's Complement Modes."""
         return self._get_iio_dev_attr_str("twos_complement_available")
 
     @property
