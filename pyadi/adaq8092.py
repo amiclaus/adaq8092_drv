@@ -47,8 +47,7 @@ class adaq8092(rx, context_manager):
     _device_name = "adaq8092"
 
     def __init__(
-        self,
-        uri="",
+        self, uri="",
     ):
         """Initialize."""
         context_manager.__init__(self, uri, self._device_name)

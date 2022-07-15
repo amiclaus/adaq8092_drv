@@ -17,28 +17,14 @@ def test_adaq8092_rx_data(test_dma_rx, iio_uri, classname, channel):
 @pytest.mark.parametrize(
     "attr, val",
     [
-        (
-            "sampling_frequency",
-            [
-                105000000,
-            ],
-        ),
+        ("sampling_frequency", [105000000,],),
         (
             "alt_bit_pol_en",
             ["alternate_bit_polarity_off", "alternate_bit_polarity_on"],
         ),
-        (
-            "clk_pol_mode",
-            ["clk_pol_normal", "clk_pol_inverted"],
-        ),
-        (
-            "data_rand_en",
-            ["data_randomizer_off", "data_randomizer_on"],
-        ),
-        (
-            "dout_en",
-            ["digital_output_on", "digital_output_off"],
-        ),
+        ("clk_pol_mode", ["clk_pol_normal", "clk_pol_inverted"],),
+        ("data_rand_en", ["data_randomizer_off", "data_randomizer_on"],),
+        ("dout_en", ["digital_output_on", "digital_output_off"],),
         (
             "lvds_cur_mode",
             [
@@ -59,10 +45,7 @@ def test_adaq8092_rx_data(test_dma_rx, iio_uri, classname, channel):
             "pd_gpio",
             ["pd1_on_pd2_on", "pd1_off_pd2_on", "pd1_on_pd2_off", "pd1_off_pd2_off"],
         ),
-        (
-            "pd_mode",
-            ["normal", "ch2_nap", "ch1_ch2_nap", "sleep"],
-        ),
+        ("pd_mode", ["normal", "ch2_nap", "ch1_ch2_nap", "sleep"],),
         (
             "test_mode",
             [
@@ -73,10 +56,7 @@ def test_adaq8092_rx_data(test_dma_rx, iio_uri, classname, channel):
                 "test_alternating",
             ],
         ),
-        (
-            "twos_complement",
-            ["offset_binary", "twos_complement"],
-        ),
+        ("twos_complement", ["offset_binary", "twos_complement"],),
     ],
 )
 def test_ad4630_attr(test_attribute_multipe_values, iio_uri, classname, attr, val):
