@@ -67,7 +67,7 @@ print("Two's Complement Modes: ", my_adc.twos_complement)
 plt.clf()
 data = my_adc.rx()
 for ch in my_adc.rx_enabled_channels:
-    plt.plot(range(0, len(data[0])), data[ch], label="voltage" + str(ch))
+    plt.plot(range(0, len(data[0])), data[ch], label="channel" + str(ch))
 plt.xlabel("Data Point")
 plt.ylabel("ADC counts")
 plt.legend(
